@@ -1,3 +1,6 @@
+shell:
+	docker-compose run --service-ports app bash
+
 shell-mysql:
 	docker-compose exec database-mysql mysql -uroot -proot
 

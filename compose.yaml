@@ -15,3 +15,19 @@ services:
       MYSQL_DATABASE: caffe
     platform: linux/amd64
     restart: always
+
+  app:
+    container_name: caffe_app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database-mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/caffe
+      SPRING_DATASOURCE_DRIVER: com.mysql.cj.jdbc.Driver
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+  #    command: ./gradlew bootRun
