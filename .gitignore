@@ -38,3 +38,6 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### local DB data ###
+db/mysql/data/
