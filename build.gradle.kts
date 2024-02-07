@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    //implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -45,6 +45,9 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.3")
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
     testImplementation("com.appmattus.fixture:fixture-kotest:1.2.0")
+
+    // validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 }
 
 tasks.withType<KotlinCompile> {
