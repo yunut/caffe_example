@@ -7,6 +7,7 @@ enum class WebErrors(val httpStatus: HttpStatus, val defaultMessage: String) {
     MISSING_HEADER(HttpStatus.BAD_REQUEST, "MISSING HEADER"),
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "MISSING_PARAMETER"),
     CONFLICT(HttpStatus.CONFLICT, "CONFLICT"),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "ACCESS DENIED"),
 
     UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN ERROR"),
 }

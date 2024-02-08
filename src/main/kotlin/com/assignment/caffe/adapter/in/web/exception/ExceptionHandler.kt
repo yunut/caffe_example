@@ -8,6 +8,7 @@ import org.hibernate.exception.ConstraintViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.validation.FieldError
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -64,6 +65,10 @@ class ExceptionHandler {
             is ConflictException -> {
                 body = ResponseBody(MetaBody(WebErrors.CONFLICT.httpStatus.value(), e.message ?: "No Message"), null)
                 httpStatus = WebErrors.CONFLICT.httpStatus
+            }
+            is AccessDeniedException -> {
+                body = ResponseBody(MetaBody(WebErrors.ACCESS_DENIED.httpStatus.value(), e.message ?: "No Message"), null)
+                httpStatus = WebErrors.ACCESS_DENIED.httpStatus
             }
             else -> {
                 body = ResponseBody(MetaBody(WebErrors.UNKNOWN_ERROR.httpStatus.value(), "서버 관리자에게 문의하세요"), null)
