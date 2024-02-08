@@ -1,4 +1,4 @@
-package com.assignment.caffe.persistence
+package com.assignment.caffe.persistence.repository
 
 import com.assignment.caffe.adapter.out.persistence.repository.UserRepository
 import com.assignment.caffe.application.domain.model.User
