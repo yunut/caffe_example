@@ -45,6 +45,11 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.3")
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
     testImplementation("com.appmattus.fixture:fixture-kotest:1.2.0")
+    testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:2.0.1")
+
+    // test container
+    testImplementation("org.testcontainers:testcontainers:1.18.3")
+    testImplementation("org.testcontainers:mysql:1.18.3")
 
     // validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
