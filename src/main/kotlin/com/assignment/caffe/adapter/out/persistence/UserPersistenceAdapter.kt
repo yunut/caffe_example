@@ -13,4 +13,8 @@ class UserPersistenceAdapter(
         userRepository.save(user)
     }
 
+    override fun existsUserByPhoneNumber(phoneNumber: String): Boolean {
+        return userRepository.existsByPhoneNumber(phoneNumber)
+    }
+
 }
