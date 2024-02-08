@@ -3,6 +3,7 @@ package com.assignment.caffe.domain.service
 import com.appmattus.kotlinfixture.kotlinFixture
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.service.UserService
+import com.assignment.caffe.application.port.out.AuthPort
 import com.assignment.caffe.application.port.out.UserPort
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
@@ -12,13 +13,17 @@ import java.sql.SQLException
 class UserServiceTest : BehaviorSpec({
 
     val userPort = mockk<UserPort>()
+    val authPort = mockk<AuthPort>()
     lateinit var userService: UserService
 
     beforeAny {
-        userService = spyk(UserService(userPort))
+        userService = spyk(UserService(userPort, authPort))
     }
 
     Given("signUp 요청이 들어온 경우") {
+
+        every { authPort.getEncryptedObject().encode(any()) } returns "1"
+
         When("정상적으로 처리되는 경우") {
 
             every { userPort.insertUser(any()) } just Runs
