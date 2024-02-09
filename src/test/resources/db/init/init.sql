@@ -10,8 +10,9 @@ CREATE TABLE user (
     UNIQUE (phone_number)
 );
 
-CREATE TABLE user_refresh_token (
+CREATE TABLE user_token (
     `user_id` INT NOT NULL,
+    `access_token` VARCHAR(255) NOT NULL,
     `refresh_token` VARCHAR(255) NOT NULL,
     `reissue_count` INT NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
