@@ -40,7 +40,7 @@ class SignService(
                 authPort.getEncryptedObject().matches(signInQuery.password, it.password)
             } ?: throw NotMatchException("아이디 또는 비밀번호가 일치하지 않습니다.")
 
-        val userToken = authPort.generateAccessTokenAndRefreshToken("{${user.id!!}:${user.phoneNumber}}")	// 토큰 생성
+        val userToken = authPort.generateAccessTokenAndRefreshToken("${user.id!!}:${user.phoneNumber}")	// 토큰 생성
 
         userRefreshTokenPort.findByUserId(user.id)?.updateRefreshToken(userToken.refreshToken)
             ?: userRefreshTokenPort.insertRefreshToken(UserRefreshToken(user, userToken.refreshToken))
