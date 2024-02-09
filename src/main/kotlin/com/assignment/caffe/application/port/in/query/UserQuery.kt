@@ -15,3 +15,16 @@ data class UserSignUpQuery(
         }
     }
 }
+
+data class UserSignInQuery(
+    @field:NotNull
+    val phoneNumber: String,
+    @field:NotNull
+    val password: String,
+) {
+    companion object {
+        fun of(phoneNumber: String, password: String): UserSignInQuery {
+            return UserSignInQuery(phoneNumber, password)
+        }
+    }
+}

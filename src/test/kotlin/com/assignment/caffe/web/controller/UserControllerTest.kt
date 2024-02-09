@@ -3,6 +3,7 @@ package com.assignment.caffe.web.controller
 import com.assignment.caffe.adapter.`in`.web.UserController
 import com.assignment.caffe.adapter.`in`.web.request.SignUpRequest
 import com.assignment.caffe.application.domain.exception.ConflictException
+import com.assignment.caffe.application.domain.model.UserToken
 import com.assignment.caffe.application.port.`in`.UserUseCase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -102,4 +103,44 @@ class UserControllerTest : BehaviorSpec({
             }
         }
     }
+
+    Given("로그인 요청 시") {
+
+        val request = SignUpRequest(
+            phoneNumber = "010-1234-5678",
+            password = "password"
+        )
+
+        When("로그인이 성공할 경우") {
+
+            every { userUseCase.signIn(any()) } returns UserToken("token")
+
+            Then("200 OK와 토큰이 발급된다.") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.post("/signin")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                ).andExpect(MockMvcResultMatchers.status().isOk)
+            }
+        }
+        When("로그인이 실패할 경우") {
+
+            every { userUseCase.signIn(any()) } throws Exception("토큰 검증 실패")
+            Then("401 Unauthorized 가 발생된다.") {
+
+                // TODO Service Exception 작성 필요
+                val exception =
+                    shouldThrow<ServletException> {
+                        mockMvc.perform(
+                            MockMvcRequestBuilders.post("/signin")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request))
+                        )
+                    }
+                exception.message!!.contains("토큰 검증 실패") shouldBe true
+            }
+        }
+    }
+
+
 })
