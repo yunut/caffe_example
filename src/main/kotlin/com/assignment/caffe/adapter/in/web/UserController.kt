@@ -24,7 +24,8 @@ class UserController(
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
     fun signUp(
-        @Validated @RequestBody request: SignUpRequest,
+        @Validated @RequestBody
+        request: SignUpRequest,
     ): ResponseBody {
         val signUpQuery = UserSignUpQuery.of(
             request.phoneNumber,
@@ -37,7 +38,8 @@ class UserController(
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/signin")
     fun signIn(
-        @Valid @RequestBody request: SignInRequest,
+        @Valid @RequestBody
+        request: SignInRequest,
     ): ResponseBody {
         val signInQuery = UserSignInQuery.of(
             request.phoneNumber,
@@ -45,6 +47,6 @@ class UserController(
         )
 
         val data = userUseCase.signIn(signInQuery)
-        return ResponseBody(MetaBody(HttpStatus.OK.value(), "User signed in successfully"), SignInResponse(data.token))
+        return ResponseBody(MetaBody(HttpStatus.OK.value(), "User signed in successfully"), SignInResponse(data.accessToken, data.refreshToken))
     }
 }

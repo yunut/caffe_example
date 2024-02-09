@@ -1,11 +1,12 @@
 package com.assignment.caffe.application.domain.model
 
 data class UserToken(
-    val token: String
+    val accessToken: String,
+    val refreshToken: String,
 ) {
     companion object {
-        fun of(token: String): UserToken {
-            return UserToken(token)
+        fun of(accessToken: String, refreshToken: String): UserToken {
+            return UserToken(accessToken, refreshToken)
         }
     }
 }

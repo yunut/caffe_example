@@ -4,24 +4,29 @@ import com.appmattus.kotlinfixture.kotlinFixture
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotMatchException
 import com.assignment.caffe.application.domain.model.User
+import com.assignment.caffe.application.domain.model.UserRefreshToken
 import com.assignment.caffe.application.domain.model.UserToken
 import com.assignment.caffe.application.domain.service.UserService
 import com.assignment.caffe.application.port.out.AuthPort
 import com.assignment.caffe.application.port.out.UserPort
+import com.assignment.caffe.application.port.out.UserRefreshTokenPort
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.sql.SQLException
 
 class UserServiceTest : BehaviorSpec({
 
     val userPort = mockk<UserPort>()
     val authPort = mockk<AuthPort>()
+    val userRefreshTokenPort = mockk<UserRefreshTokenPort>()
     lateinit var userService: UserService
 
     beforeAny {
-        userService = spyk(UserService(userPort, authPort))
+        userService = spyk(UserService(userPort, authPort, userRefreshTokenPort))
     }
 
     Given("signUp 요청이 들어온 경우") {
@@ -67,16 +72,20 @@ class UserServiceTest : BehaviorSpec({
 
     Given("Signin 요청이 들어온 경우") {
 
-        every { authPort.generateToken(any()) } returns "token"
+        every { authPort.generateAccessTokenAndRefreshToken(any()) } returns UserToken("accessToken", "refreshToken")
 
         When("정상적으로 처리되는 경우") {
             val userSignInQuery = kotlinFixture()
 
             every { userPort.findUserByPhoneNumber(any()) } returns userSignInQuery<User>()
             every { authPort.getEncryptedObject().matches(any(), any()) } returns true
+            every { userRefreshTokenPort.findByUserId(any()) } returns UserRefreshToken(User(1, "010-1234-1234", "12341234"), "refreshToken")
+            every { userRefreshTokenPort.insertRefreshToken(any()) } just Runs
 
             Then("UserToken이 반환된다.") {
-                userService.signIn(userSignInQuery()) shouldBe UserToken("token")
+                withContext(Dispatchers.IO) {
+                    userService.signIn(userSignInQuery())
+                } shouldBe UserToken("accessToken", "refreshToken")
             }
         }
 

@@ -12,17 +12,20 @@ import jakarta.persistence.Table
 class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Int? = null,
 
     @Column(name = "phone_number")
     val phoneNumber: String,
 
     @Column(name = "password")
-    val password: String
+    val password: String,
 ) {
     companion object {
         fun of(phoneNumber: String, password: String): User {
-            return User(0, phoneNumber, password)
+            return User(
+                phoneNumber = phoneNumber,
+                password = password,
+            )
         }
     }
 }
