@@ -1,7 +1,7 @@
 package com.assignment.caffe.adapter.`in`.web.security
 
 import com.assignment.caffe.adapter.`in`.web.security.jwt.JwtProvider
-import com.assignment.caffe.application.domain.model.UserToken
+import com.assignment.caffe.application.domain.dto.UserTokenDto
 import com.assignment.caffe.application.port.out.AuthPort
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
@@ -15,10 +15,10 @@ class SecurityAdapter(
         return passwordEncoder
     }
 
-    override fun generateAccessTokenAndRefreshToken(str: String): UserToken {
+    override fun generateAccessTokenAndRefreshToken(str: String): UserTokenDto {
         val accessToken = generateAccessToken(str)
         val refreshToken = generateRefreshToken()
-        return UserToken(accessToken, refreshToken)
+        return UserTokenDto(accessToken, refreshToken)
     }
 
     override fun generateAccessToken(str: String): String {

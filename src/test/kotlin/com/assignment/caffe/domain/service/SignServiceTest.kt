@@ -1,15 +1,15 @@
 package com.assignment.caffe.domain.service
 
 import com.appmattus.kotlinfixture.kotlinFixture
+import com.assignment.caffe.application.domain.dto.UserTokenDto
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotMatchException
 import com.assignment.caffe.application.domain.model.User
-import com.assignment.caffe.application.domain.model.UserRefreshToken
 import com.assignment.caffe.application.domain.model.UserToken
 import com.assignment.caffe.application.domain.service.SignService
 import com.assignment.caffe.application.port.out.AuthPort
 import com.assignment.caffe.application.port.out.UserPort
-import com.assignment.caffe.application.port.out.UserRefreshTokenPort
+import com.assignment.caffe.application.port.out.UserTokenPort
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -22,7 +22,7 @@ class SignServiceTest : BehaviorSpec({
 
     val userPort = mockk<UserPort>()
     val authPort = mockk<AuthPort>()
-    val userRefreshTokenPort = mockk<UserRefreshTokenPort>()
+    val userRefreshTokenPort = mockk<UserTokenPort>()
     lateinit var signService: SignService
 
     beforeAny {
@@ -78,7 +78,7 @@ class SignServiceTest : BehaviorSpec({
 
     Given("Signin 요청이 들어온 경우") {
 
-        every { authPort.generateAccessTokenAndRefreshToken(any()) } returns UserToken("accessToken", "refreshToken")
+        every { authPort.generateAccessTokenAndRefreshToken(any()) } returns UserTokenDto("accessToken", "refreshToken")
 
         When("정상적으로 처리되는 경우") {
             val signInQuery = kotlinFixture()
@@ -86,13 +86,13 @@ class SignServiceTest : BehaviorSpec({
 
             every { userPort.findUserByPhoneNumber(any()) } returns user
             every { authPort.getEncryptedObject().matches(any(), any()) } returns true
-            every { userRefreshTokenPort.findByUserId(any()) } returns UserRefreshToken(User(1, "010-1234-1234", "12341234"), "refreshToken")
-            every { userRefreshTokenPort.insertRefreshToken(any()) } just Runs
+            every { userRefreshTokenPort.findByUserId(any()) } returns UserToken(User(1, "010-1234-1234", "12341234"), "accessToken", "refreshToken")
+            every { userRefreshTokenPort.insertToken(any()) } just Runs
 
             Then("UserToken이 반환된다.") {
                 withContext(Dispatchers.IO) {
                     signService.signIn(signInQuery())
-                } shouldBe UserToken("accessToken", "refreshToken")
+                } shouldBe UserTokenDto("accessToken", "refreshToken")
             }
         }
 
@@ -117,6 +117,33 @@ class SignServiceTest : BehaviorSpec({
             Then("NotMatchException이 발생한다.") {
                 shouldThrow<NotMatchException> {
                     signService.signIn(signInQuery())
+                }
+            }
+        }
+    }
+
+    Given("SignOut 요청이 들어온 경우") {
+
+        When("정상적으로 처리되는 경우") {
+            val signOutQuery = kotlinFixture()
+
+            every { userRefreshTokenPort.deleteTokenByUserId(any()) } just Runs
+
+            Then("함수가 아무것도 반환하지 않고 종료된다.") {
+                withContext(Dispatchers.IO) {
+                    signService.signOut(signOutQuery())
+                }
+            }
+        }
+
+        When("예외가 발생하는 경우") {
+            val signOutQuery = kotlinFixture()
+
+            every { userRefreshTokenPort.deleteTokenByUserId(any()) } throws SQLException()
+
+            Then("상위 레이어에 예외가 전달된다.") {
+                shouldThrow<SQLException> {
+                    signService.signOut(signOutQuery())
                 }
             }
         }

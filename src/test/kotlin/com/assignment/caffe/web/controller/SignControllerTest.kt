@@ -2,8 +2,8 @@ package com.assignment.caffe.web.controller
 
 import com.assignment.caffe.adapter.`in`.web.SignController
 import com.assignment.caffe.adapter.`in`.web.request.SignUpRequest
+import com.assignment.caffe.application.domain.dto.UserTokenDto
 import com.assignment.caffe.application.domain.exception.ConflictException
-import com.assignment.caffe.application.domain.model.UserToken
 import com.assignment.caffe.application.port.`in`.SignUseCase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -114,7 +114,7 @@ class SignControllerTest : BehaviorSpec({
 
         When("로그인이 성공할 경우") {
 
-            every { signUseCase.signIn(any()) } returns UserToken("accessToken", "refreshToken")
+            every { signUseCase.signIn(any()) } returns UserTokenDto("accessToken", "refreshToken")
 
             Then("200 OK와 토큰이 발급된다.") {
                 mockMvc.perform(

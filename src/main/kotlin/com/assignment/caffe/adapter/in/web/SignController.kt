@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import java.security.Principal
 
 @RestController
 class SignController(
@@ -48,5 +49,13 @@ class SignController(
 
         val data = signUseCase.signIn(signInQuery)
         return ResponseBody(MetaBody(HttpStatus.OK.value(), "User signed in successfully"), SignInResponse(data.accessToken, data.refreshToken))
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/signout")
+    fun signOut(
+        principal: Principal,
+    ) {
+        signUseCase.signOut(principal.name.toInt())
     }
 }

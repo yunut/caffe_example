@@ -1,12 +1,12 @@
 package com.assignment.caffe.application.port.out
 
-import com.assignment.caffe.application.domain.model.UserToken
+import com.assignment.caffe.application.domain.dto.UserTokenDto
 import org.springframework.security.crypto.password.PasswordEncoder
 
 interface AuthPort {
     fun getEncryptedObject(): PasswordEncoder
 
-    fun generateAccessTokenAndRefreshToken(str: String): UserToken
+    fun generateAccessTokenAndRefreshToken(str: String): UserTokenDto
 
     fun generateAccessToken(str: String): String
 

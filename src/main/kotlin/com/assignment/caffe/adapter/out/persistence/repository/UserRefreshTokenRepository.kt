@@ -1,13 +1,15 @@
 package com.assignment.caffe.adapter.out.persistence.repository
 
-import com.assignment.caffe.application.domain.model.UserRefreshToken
+import com.assignment.caffe.application.domain.model.UserToken
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserRefreshTokenRepository : JpaRepository<UserRefreshToken, Long> {
+interface UserRefreshTokenRepository : JpaRepository<UserToken, Long> {
 
-    fun findByUserId(id: Int): UserRefreshToken?
+    fun findByUserId(id: Int): UserToken?
 
-    fun findByUserIdAndReissueCountLessThan(id: Int, count: Long): UserRefreshToken?
+    fun findByUserIdAndReissueCountLessThan(id: Int, count: Long): UserToken?
+
+    fun deleteByUserId(id: Int)
 }
