@@ -4,6 +4,18 @@ CREATE TABLE user (
     `id` INT NOT NULL AUTO_INCREMENT,
     `phone_number` VARCHAR(13) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE (phone_number)
+);
+
+CREATE TABLE user_refresh_token (
+    `user_id` INT NOT NULL,
+    `refresh_token` VARCHAR(255) NOT NULL,
+    `reissue_count` INT NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id),
+    FOREIGN KEY (user_id) REFERENCES user(id)
 );
