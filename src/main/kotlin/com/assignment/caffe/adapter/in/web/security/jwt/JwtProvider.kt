@@ -4,6 +4,7 @@ import com.assignment.caffe.adapter.`in`.web.security.jwt.config.JwtConfig
 import com.assignment.caffe.adapter.out.persistence.repository.UserRefreshTokenRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.*
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Component
 import java.sql.Timestamp
 import java.time.Instant
@@ -17,7 +18,7 @@ import javax.crypto.spec.SecretKeySpec
 class JwtProvider(
     private val jwtConfig: JwtConfig,
     private val objectMapper: ObjectMapper,
-    private val userRefreshTokenRepository: UserRefreshTokenRepository, // 단순 조회용 직접 참조 예외적 허용
+    private val userRefreshTokenRepository: UserRefreshTokenRepository, // 직접 참조 예외적 허용
 ) {
 
     val reissueLimit = jwtConfig.refreshExpirationHour.toLong() * 60 / jwtConfig.expirationHour.toLong()	// 재발급 한도
@@ -27,7 +28,7 @@ class JwtProvider(
             .signWith(SecretKeySpec(jwtConfig.secret.toByteArray(), SignatureAlgorithm.HS512.jcaName)) // HS512 알고리즘을 사용하여 secretKey를 이용해 서명
             .setSubject(userSpecification)
             .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
-            .setExpiration(Date.from(Instant.now().plus(jwtConfig.expirationHour.toLong(), ChronoUnit.SECONDS))) // JWT 토큰의 만료시간 설정
+            .setExpiration(Date.from(Instant.now().plus(jwtConfig.expirationHour.toLong(), ChronoUnit.HOURS))) // JWT 토큰의 만료시간 설정
             .compact()!!
     }
 
@@ -48,6 +49,7 @@ class JwtProvider(
             .subject
     }
 
+    @Transactional
     fun reGenerateAccessToken(oldAccessToken: String): String {
         val subject = decodeJwtPayloadSubject(oldAccessToken)
         userRefreshTokenRepository.findByUserIdAndReissueCountLessThan(subject.split(':')[0].toInt(), reissueLimit)
@@ -55,6 +57,7 @@ class JwtProvider(
         return generateAccessToken(subject)
     }
 
+    @Transactional
     fun validateRefreshToken(refreshToken: String, oldAccessToken: String) {
         validateAndParseToken(refreshToken)
         val userId = decodeJwtPayloadSubject(oldAccessToken).split(':')[0]
