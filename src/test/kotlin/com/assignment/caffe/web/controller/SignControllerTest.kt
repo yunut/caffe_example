@@ -1,10 +1,10 @@
 package com.assignment.caffe.web.controller
 
-import com.assignment.caffe.adapter.`in`.web.UserController
+import com.assignment.caffe.adapter.`in`.web.SignController
 import com.assignment.caffe.adapter.`in`.web.request.SignUpRequest
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.model.UserToken
-import com.assignment.caffe.application.port.`in`.UserUseCase
+import com.assignment.caffe.application.port.`in`.SignUseCase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.kotest.assertions.throwables.shouldThrow
@@ -25,12 +25,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
 @SpringBootTest
 @AutoConfigureWebTestClient
-class UserControllerTest : BehaviorSpec({
+class SignControllerTest : BehaviorSpec({
 
-    val userUseCase = mockk<UserUseCase>()
-    val userController = UserController(userUseCase)
+    val signUseCase = mockk<SignUseCase>()
+    val signController = SignController(signUseCase)
 
-    val mockMvc: MockMvc = MockMvcBuilders.standaloneSetup(userController).build()
+    val mockMvc: MockMvc = MockMvcBuilders.standaloneSetup(signController).build()
     val objectMapper: ObjectMapper = jacksonObjectMapper()
 
     Given("회원가입 요청 시") {
@@ -39,16 +39,16 @@ class UserControllerTest : BehaviorSpec({
 
             val request = SignUpRequest(
                 phoneNumber = "010-1234-5678",
-                password = "password"
+                password = "password",
             )
 
-            every { userUseCase.signUp(any()) } just Runs
+            every { signUseCase.signUp(any()) } just Runs
 
             Then("201 Created") {
                 mockMvc.perform(
                     MockMvcRequestBuilders.post("/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
+                        .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(MockMvcResultMatchers.status().isCreated)
             }
         }
@@ -57,46 +57,47 @@ class UserControllerTest : BehaviorSpec({
 
             val request1 = SignUpRequest(
                 phoneNumber = "0101234-5678",
-                password = "password"
+                password = "password",
             )
             val request2 = SignUpRequest(
                 phoneNumber = "010-1234-56789",
-                password = "password"
+                password = "password",
             )
 
-            every { userUseCase.signUp(any()) } just Runs
+            every { signUseCase.signUp(any()) } just Runs
 
             Then("400 Bad Request") {
                 mockMvc.perform(
                     MockMvcRequestBuilders.post("/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request1))
+                        .content(objectMapper.writeValueAsString(request1)),
                 ).andExpect(MockMvcResultMatchers.status().isBadRequest)
 
                 mockMvc.perform(
                     MockMvcRequestBuilders.post("/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request2))
+                        .content(objectMapper.writeValueAsString(request2)),
                 ).andExpect(MockMvcResultMatchers.status().isBadRequest)
-
             }
         }
 
         When("이미 존재하는 전화번호 parameter가 들어온 경우") {
 
-
-            every { userUseCase.signUp(any()) } throws ConflictException("이미 존재하는 전화번호입니다.")
+            every { signUseCase.signUp(any()) } throws ConflictException("이미 존재하는 전화번호입니다.")
 
             Then("409 Conflict") {
                 val exception = shouldThrow<ServletException> {
                     mockMvc.perform(
                         MockMvcRequestBuilders.post("/signup")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(SignUpRequest(
-                                phoneNumber = "010-1234-5678",
-                                password = "password"
-                            ))
-                            )
+                            .content(
+                                objectMapper.writeValueAsString(
+                                    SignUpRequest(
+                                        phoneNumber = "010-1234-5678",
+                                        password = "password",
+                                    ),
+                                ),
+                            ),
                     )
                 }
                 exception.message!!.contains("ConflictException") shouldBe true
@@ -108,24 +109,24 @@ class UserControllerTest : BehaviorSpec({
 
         val request = SignUpRequest(
             phoneNumber = "010-1234-5678",
-            password = "password"
+            password = "password",
         )
 
         When("로그인이 성공할 경우") {
 
-            every { userUseCase.signIn(any()) } returns UserToken("token")
+            every { signUseCase.signIn(any()) } returns UserToken("accessToken", "refreshToken")
 
             Then("200 OK와 토큰이 발급된다.") {
                 mockMvc.perform(
                     MockMvcRequestBuilders.post("/signin")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
+                        .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(MockMvcResultMatchers.status().isOk)
             }
         }
         When("로그인이 실패할 경우") {
 
-            every { userUseCase.signIn(any()) } throws Exception("토큰 검증 실패")
+            every { signUseCase.signIn(any()) } throws Exception("토큰 검증 실패")
             Then("401 Unauthorized 가 발생된다.") {
 
                 // TODO Service Exception 작성 필요
@@ -134,13 +135,11 @@ class UserControllerTest : BehaviorSpec({
                         mockMvc.perform(
                             MockMvcRequestBuilders.post("/signin")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request))
+                                .content(objectMapper.writeValueAsString(request)),
                         )
                     }
                 exception.message!!.contains("토큰 검증 실패") shouldBe true
             }
         }
     }
-
-
 })

@@ -3,13 +3,13 @@ package com.assignment.caffe.application.port.`in`
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotMatchException
 import com.assignment.caffe.application.domain.model.UserToken
-import com.assignment.caffe.application.port.`in`.query.UserSignInQuery
-import com.assignment.caffe.application.port.`in`.query.UserSignUpQuery
+import com.assignment.caffe.application.port.`in`.query.SignInQuery
+import com.assignment.caffe.application.port.`in`.query.SignUpQuery
 
-interface UserUseCase {
+interface SignUseCase {
     @Throws(ConflictException::class)
-    fun signUp(userSignUpQuery: UserSignUpQuery)
+    fun signUp(signUpQuery: SignUpQuery)
 
     @Throws(NotMatchException::class)
-    fun signIn(userSignInQuery: UserSignInQuery): UserToken
+    fun signIn(signInQuery: SignInQuery): UserToken
 }

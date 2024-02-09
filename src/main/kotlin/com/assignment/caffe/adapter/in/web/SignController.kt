@@ -5,9 +5,9 @@ import com.assignment.caffe.adapter.`in`.web.request.SignUpRequest
 import com.assignment.caffe.adapter.`in`.web.response.MetaBody
 import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
 import com.assignment.caffe.adapter.`in`.web.response.SignInResponse
-import com.assignment.caffe.application.port.`in`.UserUseCase
-import com.assignment.caffe.application.port.`in`.query.UserSignInQuery
-import com.assignment.caffe.application.port.`in`.query.UserSignUpQuery
+import com.assignment.caffe.application.port.`in`.SignUseCase
+import com.assignment.caffe.application.port.`in`.query.SignInQuery
+import com.assignment.caffe.application.port.`in`.query.SignUpQuery
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class UserController(
-    private val userUseCase: UserUseCase,
+class SignController(
+    private val signUseCase: SignUseCase,
 ) {
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -27,11 +27,11 @@ class UserController(
         @Validated @RequestBody
         request: SignUpRequest,
     ): ResponseBody {
-        val signUpQuery = UserSignUpQuery.of(
+        val signUpQuery = SignUpQuery.of(
             request.phoneNumber,
             request.password,
         )
-        userUseCase.signUp(signUpQuery)
+        signUseCase.signUp(signUpQuery)
         return ResponseBody(MetaBody(HttpStatus.CREATED.value(), "User signed up successfully"))
     }
 
@@ -41,12 +41,12 @@ class UserController(
         @Valid @RequestBody
         request: SignInRequest,
     ): ResponseBody {
-        val signInQuery = UserSignInQuery.of(
+        val signInQuery = SignInQuery.of(
             request.phoneNumber,
             request.password,
         )
 
-        val data = userUseCase.signIn(signInQuery)
+        val data = signUseCase.signIn(signInQuery)
         return ResponseBody(MetaBody(HttpStatus.OK.value(), "User signed in successfully"), SignInResponse(data.accessToken, data.refreshToken))
     }
 }

@@ -4,9 +4,9 @@ import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotMatchException
 import com.assignment.caffe.application.domain.model.UserRefreshToken
 import com.assignment.caffe.application.domain.model.UserToken
-import com.assignment.caffe.application.port.`in`.UserUseCase
-import com.assignment.caffe.application.port.`in`.query.UserSignInQuery
-import com.assignment.caffe.application.port.`in`.query.UserSignUpQuery
+import com.assignment.caffe.application.port.`in`.SignUseCase
+import com.assignment.caffe.application.port.`in`.query.SignInQuery
+import com.assignment.caffe.application.port.`in`.query.SignUpQuery
 import com.assignment.caffe.application.port.`in`.query.toEntity
 import com.assignment.caffe.application.port.out.AuthPort
 import com.assignment.caffe.application.port.out.UserPort
@@ -16,15 +16,15 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional(readOnly = true)
-class UserService(
+class SignService(
     private val userPort: UserPort,
     private val authPort: AuthPort,
     private val userRefreshTokenPort: UserRefreshTokenPort,
-) : UserUseCase {
+) : SignUseCase {
 
     @Transactional
-    override fun signUp(userSignUpQuery: UserSignUpQuery) {
-        val user = userSignUpQuery.toEntity(authPort.getEncryptedObject())
+    override fun signUp(signUpQuery: SignUpQuery) {
+        val user = signUpQuery.toEntity(authPort.getEncryptedObject())
 
         if (userPort.existsUserByPhoneNumber(user.phoneNumber)) {
             throw ConflictException("User already exists")
@@ -33,10 +33,10 @@ class UserService(
         userPort.insertUser(user)
     }
 
-    override fun signIn(userSignInQuery: UserSignInQuery): UserToken {
-        val user = userPort.findUserByPhoneNumber(userSignInQuery.phoneNumber)
+    override fun signIn(signInQuery: SignInQuery): UserToken {
+        val user = userPort.findUserByPhoneNumber(signInQuery.phoneNumber)
             ?.takeIf {
-                authPort.getEncryptedObject().matches(userSignInQuery.password, it.password)
+                authPort.getEncryptedObject().matches(signInQuery.password, it.password)
             } ?: throw NotMatchException("아이디 또는 비밀번호가 일치하지 않습니다.")
 
         val userToken = authPort.generateAccessTokenAndRefreshToken("{${user.id!!}:${user.phoneNumber}}")	// 토큰 생성

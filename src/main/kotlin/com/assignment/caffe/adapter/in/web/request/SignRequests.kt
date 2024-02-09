@@ -1,6 +1,5 @@
 package com.assignment.caffe.adapter.`in`.web.request
 
-
 import jakarta.validation.constraints.Pattern
 
 data class SignUpRequest(

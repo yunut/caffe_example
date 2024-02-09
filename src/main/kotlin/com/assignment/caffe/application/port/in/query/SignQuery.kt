@@ -2,29 +2,28 @@ package com.assignment.caffe.application.port.`in`.query
 
 import org.jetbrains.annotations.NotNull
 
-
-data class UserSignUpQuery(
+data class SignUpQuery(
     @field:NotNull
     val phoneNumber: String,
     @field:NotNull
     val password: String,
 ) {
     companion object {
-        fun of(phoneNumber: String, password: String): UserSignUpQuery {
-            return UserSignUpQuery(phoneNumber, password)
+        fun of(phoneNumber: String, password: String): SignUpQuery {
+            return SignUpQuery(phoneNumber, password)
         }
     }
 }
 
-data class UserSignInQuery(
+data class SignInQuery(
     @field:NotNull
     val phoneNumber: String,
     @field:NotNull
     val password: String,
 ) {
     companion object {
-        fun of(phoneNumber: String, password: String): UserSignInQuery {
-            return UserSignInQuery(phoneNumber, password)
+        fun of(phoneNumber: String, password: String): SignInQuery {
+            return SignInQuery(phoneNumber, password)
         }
     }
 }
