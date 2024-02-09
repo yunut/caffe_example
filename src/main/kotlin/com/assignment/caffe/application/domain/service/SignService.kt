@@ -33,6 +33,7 @@ class SignService(
         userPort.insertUser(user)
     }
 
+    @Transactional
     override fun signIn(signInQuery: SignInQuery): UserToken {
         val user = userPort.findUserByPhoneNumber(signInQuery.phoneNumber)
             ?.takeIf {

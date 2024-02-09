@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository
 interface UserRefreshTokenRepository : JpaRepository<UserRefreshToken, Long> {
 
     fun findByUserId(id: Int): UserRefreshToken?
+
+    fun findByUserIdAndReissueCountLessThan(id: Int, count: Long): UserRefreshToken?
 }

@@ -16,4 +16,8 @@ class UserRefreshTokenAdapter(
     override fun insertRefreshToken(userRefreshToken: UserRefreshToken) {
         userRefreshTokenRepository.save(userRefreshToken)
     }
+
+    override fun findByUserIdAndReissueCountLessThan(id: Int, count: Long): UserRefreshToken? {
+        return userRefreshTokenRepository.findByUserIdAndReissueCountLessThan(id, count)
+    }
 }
