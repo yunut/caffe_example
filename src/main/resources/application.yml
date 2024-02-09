@@ -3,3 +3,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+
+# 테스트 상 설정 파일에 작성하나, 실제 운영 환경에서는 환경변수로 설정.
+jwt:
+  config:
+    secret: NiOeyFbN1Gqo10bPgUyTFsRMkJpGLXSvGP04eFqj5B30r5TcrtlSXfQ7TndvYjNvfkEKLqILn0j1SmKODO1Yw3JpBBgI3nVPEahqxeY8qbPSFGyzyEVxnl4AQcrnVneI
+    expiration-hour: 3
