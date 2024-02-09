@@ -10,14 +10,17 @@ import com.assignment.caffe.application.port.`in`.query.toEntity
 import com.assignment.caffe.application.port.out.AuthPort
 import com.assignment.caffe.application.port.out.UserPort
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class UserService(
     private val userPort: UserPort,
     private val authPort: AuthPort,
 ) : UserUseCase {
 
 
+    @Transactional
     override fun signUp(userSignUpQuery: UserSignUpQuery) {
         val user = userSignUpQuery.toEntity(authPort.getEncryptedObject())
 
