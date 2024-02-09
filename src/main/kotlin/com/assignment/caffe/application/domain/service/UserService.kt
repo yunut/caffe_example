@@ -1,6 +1,7 @@
 package com.assignment.caffe.application.domain.service
 
 import com.assignment.caffe.application.domain.exception.ConflictException
+import com.assignment.caffe.application.domain.exception.NotMatchException
 import com.assignment.caffe.application.domain.model.UserToken
 import com.assignment.caffe.application.port.`in`.UserUseCase
 import com.assignment.caffe.application.port.`in`.query.UserSignInQuery
@@ -27,6 +28,10 @@ class UserService(
     }
 
     override fun signIn(userSignInQuery: UserSignInQuery): UserToken {
-        TODO()
+        val user = userPort.findUserByPhoneNumber(userSignInQuery.phoneNumber)
+            ?.takeIf { authPort.getEncryptedObject().matches(userSignInQuery.password, it.password)
+            } ?: throw NotMatchException("아이디 또는 비밀번호가 일치하지 않습니다.")
+        val token = authPort.generateToken("{${user.id}:${user.phoneNumber}}")	// 토큰 생성
+        return UserToken.of(token)
     }
 }

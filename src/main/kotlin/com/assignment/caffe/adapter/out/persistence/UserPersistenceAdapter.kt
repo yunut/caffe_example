@@ -17,4 +17,8 @@ class UserPersistenceAdapter(
         return userRepository.existsByPhoneNumber(phoneNumber)
     }
 
+    override fun findUserByPhoneNumber(phoneNumber: String): User? {
+        return userRepository.findByPhoneNumber(phoneNumber)
+    }
+
 }

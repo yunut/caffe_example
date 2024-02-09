@@ -3,6 +3,7 @@ package com.assignment.caffe.adapter.`in`.web.exception
 import com.assignment.caffe.adapter.`in`.web.response.MetaBody
 import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
 import com.assignment.caffe.application.domain.exception.ConflictException
+import com.assignment.caffe.application.domain.exception.NotMatchException
 import jakarta.servlet.http.HttpServletResponse
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.http.HttpStatus
@@ -69,6 +70,10 @@ class ExceptionHandler {
             is AccessDeniedException -> {
                 body = ResponseBody(MetaBody(WebErrors.ACCESS_DENIED.httpStatus.value(), e.message ?: "No Message"), null)
                 httpStatus = WebErrors.ACCESS_DENIED.httpStatus
+            }
+            is NotMatchException -> {
+                body = ResponseBody(MetaBody(WebErrors.UNAUTHORIZED.httpStatus.value(), e.message ?: "No Message"), null)
+                httpStatus = WebErrors.UNAUTHORIZED.httpStatus
             }
             else -> {
                 body = ResponseBody(MetaBody(WebErrors.UNKNOWN_ERROR.httpStatus.value(), "서버 관리자에게 문의하세요"), null)

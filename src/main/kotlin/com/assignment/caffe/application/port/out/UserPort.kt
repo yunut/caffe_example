@@ -7,4 +7,6 @@ interface UserPort {
     fun insertUser(user: User)
 
     fun existsUserByPhoneNumber(phoneNumber: String): Boolean
+
+    fun findUserByPhoneNumber(phoneNumber: String): User?
 }

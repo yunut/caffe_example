@@ -2,11 +2,15 @@ package com.assignment.caffe.domain.service
 
 import com.appmattus.kotlinfixture.kotlinFixture
 import com.assignment.caffe.application.domain.exception.ConflictException
+import com.assignment.caffe.application.domain.exception.NotMatchException
+import com.assignment.caffe.application.domain.model.User
+import com.assignment.caffe.application.domain.model.UserToken
 import com.assignment.caffe.application.domain.service.UserService
 import com.assignment.caffe.application.port.out.AuthPort
 import com.assignment.caffe.application.port.out.UserPort
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.*
 import java.sql.SQLException
 
@@ -56,6 +60,47 @@ class UserServiceTest : BehaviorSpec({
             Then("상위 레이어에 예외가 전달된다.") {
                 shouldThrow<SQLException> {
                     userService.signUp(userSignUpQuery())
+                }
+            }
+        }
+    }
+
+    Given("Signin 요청이 들어온 경우") {
+
+        every { authPort.generateToken(any()) } returns "token"
+
+        When("정상적으로 처리되는 경우") {
+            val userSignInQuery = kotlinFixture()
+
+            every { userPort.findUserByPhoneNumber(any()) } returns userSignInQuery<User>()
+            every { authPort.getEncryptedObject().matches(any(), any()) } returns true
+
+            Then("UserToken이 반환된다.") {
+                userService.signIn(userSignInQuery()) shouldBe UserToken("token")
+            }
+        }
+
+        When("유저가 존재하지 않는 경우") {
+            val userSignInQuery = kotlinFixture()
+
+            every { userPort.findUserByPhoneNumber(any()) } returns null
+
+            Then("NotMatchException이 발생한다.") {
+                shouldThrow<NotMatchException> {
+                    userService.signIn(userSignInQuery())
+                }
+            }
+        }
+
+        When("비밀번호가 일치하지 않는 경우") {
+            val userSignInQuery = kotlinFixture()
+
+            every { userPort.findUserByPhoneNumber(any()) } returns userSignInQuery<User>()
+            every { authPort.getEncryptedObject().matches(any(), any()) } returns false
+
+            Then("NotMatchException이 발생한다.") {
+                shouldThrow<NotMatchException> {
+                    userService.signIn(userSignInQuery())
                 }
             }
         }

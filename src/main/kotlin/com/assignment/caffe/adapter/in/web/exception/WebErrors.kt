@@ -8,6 +8,7 @@ enum class WebErrors(val httpStatus: HttpStatus, val defaultMessage: String) {
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "MISSING_PARAMETER"),
     CONFLICT(HttpStatus.CONFLICT, "CONFLICT"),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "ACCESS DENIED"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED"),
 
     UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN ERROR"),
 }
