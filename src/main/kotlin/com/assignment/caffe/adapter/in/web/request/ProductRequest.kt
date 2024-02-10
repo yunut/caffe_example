@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 data class CreateProductRequest(
 
@@ -35,7 +35,7 @@ data class CreateProductRequest(
 
     @field:NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
-    val expireDate: LocalDateTime,
+    val expireDate: LocalDate,
 
     @field:NotNull
     val size: ProductSize,

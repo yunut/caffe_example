@@ -1,7 +1,7 @@
 package com.assignment.caffe.application.port.`in`.query
 
 import com.assignment.caffe.application.domain.enum.ProductSize
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 data class CreateProductQuery(
     val category: String,
@@ -9,7 +9,7 @@ data class CreateProductQuery(
     val originPrice: Int,
     val name: String,
     val description: String,
-    val expireDate: LocalDateTime,
+    val expireDate: LocalDate,
     val size: ProductSize,
     val createdBy: String,
 ) {
@@ -20,7 +20,7 @@ data class CreateProductQuery(
             originPrice: Int,
             name: String,
             description: String,
-            expireDate: LocalDateTime,
+            expireDate: LocalDate,
             size: ProductSize,
             createdBy: String,
         ): CreateProductQuery {

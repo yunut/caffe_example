@@ -3,7 +3,7 @@ package com.assignment.caffe.web.controller.fixture
 import com.assignment.caffe.adapter.`in`.web.request.CreateProductRequest
 import com.assignment.caffe.application.domain.enum.ProductSize
 import com.fasterxml.jackson.annotation.JsonFormat
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 inline fun createProductRequestBuild(block: CreateProductRequestBuilder.() -> Unit = {}) =
     CreateProductRequestBuilder().apply(block).build()
@@ -15,7 +15,7 @@ class CreateProductRequestBuilder {
     var description: String = "상품 설명"
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    var expireDate: LocalDateTime = LocalDateTime.now()
+    var expireDate: LocalDate = LocalDate.now()
     val size: ProductSize = ProductSize.SMALL
     fun build(): CreateProductRequest = CreateProductRequest(
         category = category,

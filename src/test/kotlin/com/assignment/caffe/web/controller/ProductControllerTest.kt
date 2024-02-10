@@ -1,16 +1,20 @@
 package com.assignment.caffe.web.controller
 
 import com.assignment.caffe.adapter.`in`.web.ProductController
+import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.port.`in`.ProductUseCase
 import com.assignment.caffe.web.controller.fixture.createProductRequestBuild
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import jakarta.servlet.ServletException
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
@@ -109,6 +113,28 @@ class ProductControllerTest : BehaviorSpec({
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(MockMvcResultMatchers.status().isBadRequest)
+            }
+        }
+
+        When("이미 존재하는 이름의 상품을 등록하는 경우") {
+
+            val request = createProductRequestBuild()
+
+            every { productUseCase.createProduct(any()) } throws ConflictException("이미 존재하는 상품입니다.")
+
+            Then("409 Conflict") {
+                val exception = shouldThrow<ServletException> {
+                    mockMvc.perform(
+                        MockMvcRequestBuilders.post("/product")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(
+                                objectMapper.writeValueAsString(
+                                    request,
+                                ),
+                            ),
+                    )
+                }
+                exception.message!!.contains("ConflictException") shouldBe true
             }
         }
     }
