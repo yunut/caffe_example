@@ -14,7 +14,7 @@ class CreateProductRequestBuilder {
     var name: String = "상품명"
     var description: String = "상품 설명"
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     var expireDate: LocalDateTime = LocalDateTime.now()
     val size: ProductSize = ProductSize.SMALL
     fun build(): CreateProductRequest = CreateProductRequest(
