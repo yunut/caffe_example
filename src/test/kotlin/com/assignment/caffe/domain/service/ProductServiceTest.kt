@@ -2,11 +2,15 @@ package com.assignment.caffe.domain.service
 
 import com.appmattus.kotlinfixture.kotlinFixture
 import com.assignment.caffe.application.domain.exception.ConflictException
+import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.domain.service.ProductService
 import com.assignment.caffe.application.port.out.ProductPort
+import com.assignment.caffe.persistence.repository.fixture.createProductBuild
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.sql.SQLException
 
 class ProductServiceTest : BehaviorSpec({
@@ -16,7 +20,9 @@ class ProductServiceTest : BehaviorSpec({
 
     beforeAny {
         productService = spyk(
-            ProductService(productPort),
+            withContext(Dispatchers.IO) {
+                ProductService(productPort)
+            },
         )
     }
 
@@ -29,7 +35,9 @@ class ProductServiceTest : BehaviorSpec({
         When("정상적으로 처리되는 경우") {
 
             Then("함수가 아무것도 반환하지 않고 종료된다.") {
-                productService.createProduct(createProductQuery())
+                withContext(Dispatchers.IO) {
+                    productService.createProduct(createProductQuery())
+                }
             }
         }
 
@@ -52,6 +60,48 @@ class ProductServiceTest : BehaviorSpec({
             Then("요청 어댑터에 예외가 전달된다.") {
                 shouldThrow<SQLException> {
                     productService.createProduct(createProductQuery())
+                }
+            }
+        }
+    }
+
+    Given("상품 부분 수정 시") {
+        val updateProductQuery = kotlinFixture()
+
+        every { productPort.updateProduct(any()) } just Runs
+        every { productPort.existsProductById(any()) } returns true
+        every { productPort.findProductById(any()) } returns createProductBuild()
+
+        When("정상적으로 처리되는 경우") {
+
+            every { productPort.findProductById(any()) } returns createProductBuild()
+
+            Then("함수가 아무것도 반환하지 않고 종료된다.") {
+                withContext(Dispatchers.IO) {
+                    productService.updateProduct(updateProductQuery())
+                }
+            }
+        }
+
+        When("상품 수정 시 존재하지 않는 상품이 있는 경우") {
+
+            every { productPort.existsProductById(any()) } returns false
+
+            Then("NotFoundException 발생한다.") {
+                shouldThrow<NotFoundException> {
+                    productService.updateProduct(updateProductQuery())
+                }
+            }
+        }
+
+        When("예외가 발생하는 경우") {
+
+            every { productPort.updateProduct(any()) } throws SQLException()
+            every { productPort.existsProductById(any()) } returns true
+
+            Then("요청 어댑터에 예외가 전달된다.") {
+                shouldThrow<SQLException> {
+                    productService.updateProduct(updateProductQuery())
                 }
             }
         }

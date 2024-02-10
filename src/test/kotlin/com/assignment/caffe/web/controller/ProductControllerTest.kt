@@ -150,7 +150,7 @@ class ProductControllerTest : BehaviorSpec({
 
             Then("200 OK") {
                 mockMvc.perform(
-                    MockMvcRequestBuilders.patch("/product")
+                    MockMvcRequestBuilders.patch("/product/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(MockMvcResultMatchers.status().isOk)
@@ -165,7 +165,7 @@ class ProductControllerTest : BehaviorSpec({
 
             Then("400 Bad Request") {
                 mockMvc.perform(
-                    MockMvcRequestBuilders.patch("/product")
+                    MockMvcRequestBuilders.patch("/product/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -180,7 +180,7 @@ class ProductControllerTest : BehaviorSpec({
 
             Then("400 Bad Request") {
                 mockMvc.perform(
-                    MockMvcRequestBuilders.patch("/product")
+                    MockMvcRequestBuilders.patch("/product/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -195,7 +195,7 @@ class ProductControllerTest : BehaviorSpec({
 
             Then("400 Bad Request") {
                 mockMvc.perform(
-                    MockMvcRequestBuilders.patch("/product")
+                    MockMvcRequestBuilders.patch("/product/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(MockMvcResultMatchers.status().isBadRequest)
@@ -210,7 +210,7 @@ class ProductControllerTest : BehaviorSpec({
 
             Then("400 Bad Request") {
                 mockMvc.perform(
-                    MockMvcRequestBuilders.patch("/product")
+                    MockMvcRequestBuilders.patch("/product/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(MockMvcResultMatchers.status().isBadRequest)

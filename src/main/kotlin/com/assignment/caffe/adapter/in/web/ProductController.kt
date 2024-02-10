@@ -2,6 +2,8 @@ package com.assignment.caffe.adapter.`in`.web
 
 import com.assignment.caffe.adapter.`in`.web.request.CreateProductRequest
 import com.assignment.caffe.adapter.`in`.web.request.UpdateProductRequest
+import com.assignment.caffe.adapter.`in`.web.response.MetaBody
+import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
 import com.assignment.caffe.application.port.`in`.ProductUseCase
 import com.assignment.caffe.application.port.`in`.query.CreateProductQuery
 import com.assignment.caffe.application.port.`in`.query.UpdateProductQuery
@@ -21,7 +23,7 @@ class ProductController(
     fun createProduct(
         @Validated @RequestBody
         request: CreateProductRequest,
-    ) {
+    ): ResponseBody {
         val authentication = SecurityContextHolder.getContext().authentication
 
         val createProductQuery = CreateProductQuery(
@@ -36,18 +38,20 @@ class ProductController(
         )
 
         productUseCase.createProduct(createProductQuery)
+        return ResponseBody(MetaBody(HttpStatus.CREATED.value(), "Product create successfully"))
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PatchMapping("")
+    @PatchMapping("{id}")
     fun updateProduct(
+        @PathVariable id: String,
         @Validated @RequestBody
         request: UpdateProductRequest,
-    ) {
+    ): ResponseBody {
         val authentication = SecurityContextHolder.getContext().authentication
 
         val updateProductQuery = UpdateProductQuery(
-            id = authentication.name,
+            id = id,
             category = request.category,
             salePrice = request.salePrice,
             originPrice = request.originPrice,
@@ -59,5 +63,6 @@ class ProductController(
         )
 
         productUseCase.updateProduct(updateProductQuery)
+        return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product updated successfully"))
     }
 }

@@ -1,6 +1,7 @@
 package com.assignment.caffe.application.domain.model
 
 import com.assignment.caffe.application.domain.enum.ProductSize
+import com.assignment.caffe.application.port.`in`.query.UpdateProductQuery
 import jakarta.persistence.*
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.JdbcTypeCode
@@ -68,5 +69,21 @@ class Product private constructor(
                 barCode = barCode,
             )
         }
+    }
+
+    fun update(
+        updateProductQuery: UpdateProductQuery,
+    ): Product {
+        return Product(
+            category = updateProductQuery.category ?: this.category,
+            salePrice = updateProductQuery.salePrice ?: this.salePrice,
+            originPrice = updateProductQuery.originPrice ?: this.originPrice,
+            name = updateProductQuery.name ?: this.name,
+            description = updateProductQuery.description ?: this.description,
+            expireDate = updateProductQuery.expireDate ?: this.expireDate,
+            size = updateProductQuery.size?.name ?: this.size,
+            createdBy = updateProductQuery.createdBy ?: this.createdBy,
+            barCode = this.barCode,
+        )
     }
 }
