@@ -34,7 +34,7 @@ data class CreateProductRequest(
     val description: String,
 
     @field:NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     val expireDate: LocalDateTime,
 
     @field:NotNull
