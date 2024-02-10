@@ -13,4 +13,6 @@ interface ProductPort {
     fun existsProductById(id: String): Boolean
 
     fun findProductById(id: String): Product?
+
+    fun deleteProduct(id: String)
 }

@@ -37,7 +37,8 @@ class ProductService(
         productPort.updateProduct(product)
     }
 
+    @Transactional
     override fun deleteProduct(id: String) {
-        TODO("Not yet implemented")
+        productPort.deleteProduct(id)
     }
 }

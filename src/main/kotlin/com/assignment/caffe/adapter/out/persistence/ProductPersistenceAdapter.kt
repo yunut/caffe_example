@@ -29,4 +29,8 @@ class ProductPersistenceAdapter(
     override fun findProductById(id: String): Product? {
         return productRepository.findProductByBarCode(UUID.fromString(id))
     }
+
+    override fun deleteProduct(id: String) {
+        productRepository.deleteByBarCode(UUID.fromString(id))
+    }
 }

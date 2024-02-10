@@ -106,4 +106,30 @@ class ProductServiceTest : BehaviorSpec({
             }
         }
     }
+
+    Given("상품 삭제 요청이 들어온 경우") {
+        val id = "1"
+
+        every { productPort.deleteProduct(any()) } just Runs
+
+        When("정상적으로 처리되는 경우") {
+
+            Then("함수가 아무것도 반환하지 않고 종료된다.") {
+                withContext(Dispatchers.IO) {
+                    productService.deleteProduct(id)
+                }
+            }
+        }
+
+        When("예외가 발생하는 경우") {
+
+            every { productPort.deleteProduct(any()) } throws SQLException()
+
+            Then("요청 어댑터에 예외가 전달된다.") {
+                shouldThrow<SQLException> {
+                    productService.deleteProduct(id)
+                }
+            }
+        }
+    }
 })

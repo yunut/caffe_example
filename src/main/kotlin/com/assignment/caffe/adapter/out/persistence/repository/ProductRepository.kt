@@ -13,4 +13,6 @@ interface ProductRepository : JpaRepository<Product, UUID> {
     fun existsByBarCode(barCode: UUID): Boolean
 
     fun findProductByBarCode(barCode: UUID): Product?
+
+    fun deleteByBarCode(barCode: UUID)
 }
