@@ -11,4 +11,8 @@ interface AuthPort {
     fun generateAccessToken(str: String): String
 
     fun generateRefreshToken(): String
+
+    fun getAccessTokenExpirationTimeHour(): Long
+
+    fun getRefreshTokenExpirationTimeHour(): Long
 }

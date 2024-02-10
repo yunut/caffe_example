@@ -3,7 +3,8 @@ package com.assignment.caffe.application.domain.service
 import com.assignment.caffe.application.domain.dto.UserTokenDto
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotMatchException
-import com.assignment.caffe.application.domain.model.UserToken
+import com.assignment.caffe.application.domain.model.UserBlacklistToken
+import com.assignment.caffe.application.domain.model.UserRefreshToken
 import com.assignment.caffe.application.port.`in`.SignUseCase
 import com.assignment.caffe.application.port.`in`.query.SignInQuery
 import com.assignment.caffe.application.port.`in`.query.SignUpQuery
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 class SignService(
     private val userPort: UserPort,
     private val authPort: AuthPort,
-    private val userRefreshTokenPort: UserTokenPort,
+    private val userTokenPort: UserTokenPort,
 ) : SignUseCase {
 
     @Transactional
@@ -42,13 +43,13 @@ class SignService(
 
         val userToken = authPort.generateAccessTokenAndRefreshToken("${user.id!!}:${user.phoneNumber}")	// 토큰 생성
 
-        userRefreshTokenPort.findByUserId(user.id)?.updateRefreshToken(userToken.refreshToken)
-            ?: userRefreshTokenPort.insertToken(UserToken(user, userToken.accessToken, userToken.refreshToken))
+        userTokenPort.insertRefreshToken(UserRefreshToken.of(user.id.toString(), userToken.refreshToken), authPort.getRefreshTokenExpirationTimeHour())	// 리프레시 토큰 저장
+
         return UserTokenDto.of(userToken.accessToken, userToken.refreshToken)
     }
 
-    @Transactional
-    override fun signOut(userId: Int) {
-        userRefreshTokenPort.deleteTokenByUserId(userId)
+    override fun signOut(userId: Int, accessToken: String) {
+        userTokenPort.deleteRefreshTokenByUserId(userId)
+        userTokenPort.insertBlackListToken(UserBlacklistToken.of(userId.toString(), accessToken), authPort.getAccessTokenExpirationTimeHour())
     }
 }

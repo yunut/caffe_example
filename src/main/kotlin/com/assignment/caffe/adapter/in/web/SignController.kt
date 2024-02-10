@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
@@ -54,8 +55,9 @@ class SignController(
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/signout")
     fun signOut(
+        @RequestHeader("Authorization") token: String,
         principal: Principal,
     ) {
-        signUseCase.signOut(principal.name.toInt())
+        signUseCase.signOut(principal.name.toInt(), token)
     }
 }

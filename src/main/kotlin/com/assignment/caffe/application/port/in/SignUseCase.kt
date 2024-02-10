@@ -13,5 +13,5 @@ interface SignUseCase {
     @Throws(NotMatchException::class)
     fun signIn(signInQuery: SignInQuery): UserTokenDto
 
-    fun signOut(userId: Int)
+    fun signOut(userId: Int, accessToken: String)
 }

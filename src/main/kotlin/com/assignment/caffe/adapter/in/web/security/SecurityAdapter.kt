@@ -28,4 +28,12 @@ class SecurityAdapter(
     override fun generateRefreshToken(): String {
         return jwtProvider.generateRefreshToken()
     }
+
+    override fun getAccessTokenExpirationTimeHour(): Long {
+        return jwtProvider.getAccessTokenExpireHour()
+    }
+
+    override fun getRefreshTokenExpirationTimeHour(): Long {
+        return jwtProvider.getRefreshTokenExpireHour()
+    }
 }

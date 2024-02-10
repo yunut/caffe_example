@@ -5,7 +5,6 @@ import com.assignment.caffe.application.domain.dto.UserTokenDto
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotMatchException
 import com.assignment.caffe.application.domain.model.User
-import com.assignment.caffe.application.domain.model.UserToken
 import com.assignment.caffe.application.domain.service.SignService
 import com.assignment.caffe.application.port.out.AuthPort
 import com.assignment.caffe.application.port.out.UserPort
@@ -22,13 +21,13 @@ class SignServiceTest : BehaviorSpec({
 
     val userPort = mockk<UserPort>()
     val authPort = mockk<AuthPort>()
-    val userRefreshTokenPort = mockk<UserTokenPort>()
+    val userTokenPort = mockk<UserTokenPort>()
     lateinit var signService: SignService
 
     beforeAny {
         signService = spyk(
             withContext(Dispatchers.IO) {
-                SignService(userPort, authPort, userRefreshTokenPort)
+                SignService(userPort, authPort, userTokenPort)
             },
         )
     }
@@ -79,6 +78,8 @@ class SignServiceTest : BehaviorSpec({
     Given("Signin 요청이 들어온 경우") {
 
         every { authPort.generateAccessTokenAndRefreshToken(any()) } returns UserTokenDto("accessToken", "refreshToken")
+        every { authPort.getRefreshTokenExpirationTimeHour() } returns 1
+        every { authPort.getAccessTokenExpirationTimeHour() } returns 1
 
         When("정상적으로 처리되는 경우") {
             val signInQuery = kotlinFixture()
@@ -86,8 +87,7 @@ class SignServiceTest : BehaviorSpec({
 
             every { userPort.findUserByPhoneNumber(any()) } returns user
             every { authPort.getEncryptedObject().matches(any(), any()) } returns true
-            every { userRefreshTokenPort.findByUserId(any()) } returns UserToken(User(1, "010-1234-1234", "12341234"), "accessToken", "refreshToken")
-            every { userRefreshTokenPort.insertToken(any()) } just Runs
+            every { userTokenPort.insertRefreshToken(any(), any()) } just Runs
 
             Then("UserToken이 반환된다.") {
                 withContext(Dispatchers.IO) {
@@ -127,11 +127,12 @@ class SignServiceTest : BehaviorSpec({
         When("정상적으로 처리되는 경우") {
             val signOutQuery = kotlinFixture()
 
-            every { userRefreshTokenPort.deleteTokenByUserId(any()) } just Runs
+            every { userTokenPort.deleteRefreshTokenByUserId(any()) } just Runs
+            every { userTokenPort.insertBlackListToken(any(), any()) } just Runs
 
             Then("함수가 아무것도 반환하지 않고 종료된다.") {
                 withContext(Dispatchers.IO) {
-                    signService.signOut(signOutQuery())
+                    signService.signOut(1, signOutQuery())
                 }
             }
         }
@@ -139,11 +140,11 @@ class SignServiceTest : BehaviorSpec({
         When("예외가 발생하는 경우") {
             val signOutQuery = kotlinFixture()
 
-            every { userRefreshTokenPort.deleteTokenByUserId(any()) } throws SQLException()
+            every { userTokenPort.deleteRefreshTokenByUserId(any()) } throws Exception()
 
             Then("상위 레이어에 예외가 전달된다.") {
-                shouldThrow<SQLException> {
-                    signService.signOut(signOutQuery())
+                shouldThrow<Exception> {
+                    signService.signOut(1, signOutQuery())
                 }
             }
         }

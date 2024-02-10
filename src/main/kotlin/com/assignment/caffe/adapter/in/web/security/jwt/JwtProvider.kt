@@ -1,7 +1,8 @@
 package com.assignment.caffe.adapter.`in`.web.security.jwt
 
 import com.assignment.caffe.adapter.`in`.web.security.jwt.config.JwtConfig
-import com.assignment.caffe.adapter.out.persistence.repository.UserTokenRepository
+import com.assignment.caffe.adapter.out.redis.repository.UserTokenRepository
+import com.assignment.caffe.application.domain.model.UserRefreshToken
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.*
 import jakarta.transaction.Transactional
@@ -20,8 +21,6 @@ class JwtProvider(
     private val objectMapper: ObjectMapper,
     private val userTokenRepository: UserTokenRepository, // 직접 참조 예외적 허용
 ) {
-
-    val reissueLimit = jwtConfig.refreshExpirationHour.toLong() * 60 / jwtConfig.expirationHour.toLong()	// 재발급 한도
 
     fun generateAccessToken(userSpecification: String): String {
         return Jwts.builder()
@@ -52,8 +51,7 @@ class JwtProvider(
     @Transactional
     fun reGenerateAccessToken(oldAccessToken: String): String {
         val subject = decodeJwtPayloadSubject(oldAccessToken)
-        userTokenRepository.findByUserIdAndReissueCountLessThan(subject.split(':')[0].toInt(), reissueLimit)
-            ?.increaseReissueCount() ?: throw ExpiredJwtException(null, null, "Refresh token is expired.")
+        userTokenRepository.find("${UserRefreshToken.prefix}${subject.split(':')[0]}") ?: throw ExpiredJwtException(null, null, "Refresh token is expired.")
         return generateAccessToken(subject)
     }
 
@@ -61,8 +59,16 @@ class JwtProvider(
     fun validateRefreshToken(refreshToken: String, oldAccessToken: String) {
         validateAndParseToken(refreshToken)
         val userId = decodeJwtPayloadSubject(oldAccessToken).split(':')[0]
-        userTokenRepository.findByUserIdAndReissueCountLessThan(userId.toInt(), reissueLimit)
-            ?.takeIf { it.validateRefreshToken(refreshToken) } ?: throw ExpiredJwtException(null, null, "Refresh token is expired.")
+        userTokenRepository.find("${UserRefreshToken.prefix}$userId")
+            ?.takeIf { it == refreshToken } ?: throw ExpiredJwtException(null, null, "Refresh token is expired.")
+    }
+
+    fun getAccessTokenExpireHour(): Long {
+        return jwtConfig.expirationHour.toLong()
+    }
+
+    fun getRefreshTokenExpireHour(): Long {
+        return jwtConfig.refreshExpirationHour.toLong()
     }
 
     private fun validateAndParseToken(token: String?): Jws<Claims> {

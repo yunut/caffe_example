@@ -17,8 +17,8 @@ import org.springframework.web.bind.MissingRequestHeaderException
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.servlet.resource.NoResourceFoundException
 
 @ControllerAdvice
 class ExceptionHandler {
@@ -74,6 +74,10 @@ class ExceptionHandler {
             is NotMatchException -> {
                 body = ResponseBody(MetaBody(WebErrors.UNAUTHORIZED.httpStatus.value(), e.message ?: "No Message"), null)
                 httpStatus = WebErrors.UNAUTHORIZED.httpStatus
+            }
+            is NoResourceFoundException -> {
+                body = ResponseBody(MetaBody(WebErrors.NOT_FOUND.httpStatus.value(), e.message ?: "No Message"), null)
+                httpStatus = WebErrors.NOT_FOUND.httpStatus
             }
             else -> {
                 body = ResponseBody(MetaBody(WebErrors.UNKNOWN_ERROR.httpStatus.value(), "서버 관리자에게 문의하세요"), null)
