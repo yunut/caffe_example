@@ -17,6 +17,7 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.sql.SQLException
+import java.util.*
 
 class SignServiceTest : BehaviorSpec({
 
@@ -84,7 +85,7 @@ class SignServiceTest : BehaviorSpec({
 
         When("정상적으로 처리되는 경우") {
             val signInQuery = kotlinFixture()
-            val user = User.of("010-1234-1234", "12341234", listOf(UserRole.ROLE_USER), id = 0)
+            val user = User.of("010-1234-1234", "12341234", listOf(UserRole.ROLE_USER), id = UUID.randomUUID())
 
             every { userPort.findUserByPhoneNumber(any()) } returns user
             every { authPort.getEncryptedObject().matches(any(), any()) } returns true
@@ -133,7 +134,7 @@ class SignServiceTest : BehaviorSpec({
 
             Then("함수가 아무것도 반환하지 않고 종료된다.") {
                 withContext(Dispatchers.IO) {
-                    signService.signOut(1, signOutQuery())
+                    signService.signOut(UUID.randomUUID().toString(), signOutQuery())
                 }
             }
         }
@@ -145,7 +146,7 @@ class SignServiceTest : BehaviorSpec({
 
             Then("상위 레이어에 예외가 전달된다.") {
                 shouldThrow<Exception> {
-                    signService.signOut(1, signOutQuery())
+                    signService.signOut(UUID.randomUUID().toString(), signOutQuery())
                 }
             }
         }

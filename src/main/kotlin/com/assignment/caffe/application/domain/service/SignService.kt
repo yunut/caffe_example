@@ -49,8 +49,8 @@ class SignService(
         return UserTokenDto.of(userToken.accessToken, userToken.refreshToken)
     }
 
-    override fun signOut(userId: Int, accessToken: String) {
+    override fun signOut(userId: String, accessToken: String) {
         userTokenPort.deleteRefreshTokenByUserId(userId)
-        userTokenPort.insertBlackListToken(UserBlacklistToken.of(userId.toString(), accessToken), authPort.getAccessTokenExpirationTimeHour())
+        userTokenPort.insertBlackListToken(UserBlacklistToken.of(userId, accessToken), authPort.getAccessTokenExpirationTimeHour())
     }
 }

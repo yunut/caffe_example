@@ -58,6 +58,6 @@ class SignController(
         @RequestHeader("Authorization") token: String,
         principal: Principal,
     ) {
-        signUseCase.signOut(principal.name.toInt(), token)
+        signUseCase.signOut(principal.name, token)
     }
 }

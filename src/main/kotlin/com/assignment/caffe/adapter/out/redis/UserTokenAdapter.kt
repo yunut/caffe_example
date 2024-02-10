@@ -14,12 +14,12 @@ class UserTokenAdapter(
         userTokenRepository.saveWithExpire(userRefreshToken.key, userRefreshToken.refreshToken, expireHour)
     }
 
-    override fun findRefreshTokenByUserId(id: Int): UserRefreshToken? {
+    override fun findRefreshTokenByUserId(id: String): UserRefreshToken? {
         val refreshToken = userTokenRepository.find("${UserRefreshToken.prefix}$id")
-        return refreshToken?.let { UserRefreshToken.of(id.toString(), it) }
+        return refreshToken?.let { UserRefreshToken.of(id, it) }
     }
 
-    override fun deleteRefreshTokenByUserId(id: Int) {
+    override fun deleteRefreshTokenByUserId(id: String) {
         userTokenRepository.delete("${UserRefreshToken.prefix}$id")
     }
 

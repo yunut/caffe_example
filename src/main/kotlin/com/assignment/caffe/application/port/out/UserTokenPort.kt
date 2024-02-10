@@ -7,9 +7,9 @@ interface UserTokenPort {
 
     fun insertRefreshToken(userRefreshToken: UserRefreshToken, expireHour: Long)
 
-    fun findRefreshTokenByUserId(id: Int): UserRefreshToken?
+    fun findRefreshTokenByUserId(id: String): UserRefreshToken?
 
-    fun deleteRefreshTokenByUserId(id: Int)
+    fun deleteRefreshTokenByUserId(id: String)
 
     fun insertBlackListToken(userBlacklistToken: UserBlacklistToken, expireHour: Long)
 
