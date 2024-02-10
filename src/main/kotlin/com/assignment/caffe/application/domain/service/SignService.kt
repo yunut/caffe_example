@@ -1,6 +1,7 @@
 package com.assignment.caffe.application.domain.service
 
 import com.assignment.caffe.application.domain.dto.UserTokenDto
+import com.assignment.caffe.application.domain.enum.UserRole
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotMatchException
 import com.assignment.caffe.application.domain.model.UserBlacklistToken
@@ -25,7 +26,7 @@ class SignService(
 
     @Transactional
     override fun signUp(signUpQuery: SignUpQuery) {
-        val user = signUpQuery.toEntity(authPort.getEncryptedObject())
+        val user = signUpQuery.toEntity(authPort.getEncryptedObject(), listOf(UserRole.ROLE_USER))
 
         if (userPort.existsUserByPhoneNumber(user.phoneNumber)) {
             throw ConflictException("User already exists")
@@ -41,7 +42,7 @@ class SignService(
                 authPort.getEncryptedObject().matches(signInQuery.password, it.password)
             } ?: throw NotMatchException("아이디 또는 비밀번호가 일치하지 않습니다.")
 
-        val userToken = authPort.generateAccessTokenAndRefreshToken("${user.id!!}:${user.phoneNumber}")	// 토큰 생성
+        val userToken = authPort.generateAccessTokenAndRefreshToken("${user.id!!}:${user.roles}")	// 토큰 생성
 
         userTokenPort.insertRefreshToken(UserRefreshToken.of(user.id.toString(), userToken.refreshToken), authPort.getRefreshTokenExpirationTimeHour())	// 리프레시 토큰 저장
 

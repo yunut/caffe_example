@@ -2,6 +2,7 @@ package com.assignment.caffe.domain.service
 
 import com.appmattus.kotlinfixture.kotlinFixture
 import com.assignment.caffe.application.domain.dto.UserTokenDto
+import com.assignment.caffe.application.domain.enum.UserRole
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotMatchException
 import com.assignment.caffe.application.domain.model.User
@@ -83,7 +84,7 @@ class SignServiceTest : BehaviorSpec({
 
         When("정상적으로 처리되는 경우") {
             val signInQuery = kotlinFixture()
-            val user = User(1, "010-1234-1234", "12341234")
+            val user = User.of("010-1234-1234", "12341234", listOf(UserRole.ROLE_USER), id = 0)
 
             every { userPort.findUserByPhoneNumber(any()) } returns user
             every { authPort.getEncryptedObject().matches(any(), any()) } returns true

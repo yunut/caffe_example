@@ -26,7 +26,7 @@ class UserTokenRepository(
     }
 
     fun expire(key: String, expire: Long) {
-        redisTemplate.expire(key, expire, TimeUnit.SECONDS)
+        redisTemplate.expire(key, expire, TimeUnit.HOURS)
     }
 
     // 레디스 만료시간 설정후 save
