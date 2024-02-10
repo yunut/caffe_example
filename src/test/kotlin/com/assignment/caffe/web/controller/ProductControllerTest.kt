@@ -4,6 +4,7 @@ import com.assignment.caffe.adapter.`in`.web.ProductController
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.port.`in`.ProductUseCase
 import com.assignment.caffe.web.controller.fixture.createProductRequestBuild
+import com.assignment.caffe.web.controller.fixture.updateProductRequestBuild
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -135,6 +136,84 @@ class ProductControllerTest : BehaviorSpec({
                     )
                 }
                 exception.message!!.contains("ConflictException") shouldBe true
+            }
+        }
+    }
+
+    Given("상품 부분 수정 요청 시") {
+
+        every { productUseCase.updateProduct(any()) } just Runs
+
+        When("정상적인 parameter가 들어온 경우") {
+
+            val request = updateProductRequestBuild()
+
+            Then("200 OK") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.patch("/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(MockMvcResultMatchers.status().isOk)
+            }
+        }
+
+        When("상품명이 100자를 초과하는 경우") {
+
+            val request = updateProductRequestBuild {
+                name = "a".repeat(101)
+            }
+
+            Then("400 Bad Request") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.patch("/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(MockMvcResultMatchers.status().isBadRequest)
+            }
+        }
+
+        When("상품 설명이 1000자를 초과하는 경우") {
+
+            val request = updateProductRequestBuild {
+                description = "a".repeat(1001)
+            }
+
+            Then("400 Bad Request") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.patch("/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(MockMvcResultMatchers.status().isBadRequest)
+            }
+        }
+
+        When("상품 판매 가격이 0인 경우") {
+
+            val request = updateProductRequestBuild {
+                salePrice = 0
+            }
+
+            Then("400 Bad Request") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.patch("/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(MockMvcResultMatchers.status().isBadRequest)
+            }
+        }
+
+        When("상품 원가가 음수인 경우") {
+
+            val request = updateProductRequestBuild {
+                originPrice = -1
+            }
+
+            Then("400 Bad Request") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.patch("/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(MockMvcResultMatchers.status().isBadRequest)
             }
         }
     }

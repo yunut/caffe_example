@@ -40,3 +40,28 @@ data class CreateProductRequest(
     @field:NotNull
     val size: ProductSize,
 )
+
+data class UpdateProductRequest(
+
+    @field:Pattern(regexp = "^.{1,}\$")
+    val category: String? = null,
+
+    // 0보다 큰 정수
+    @field:Min(1)
+    val salePrice: Int? = null,
+
+    // 0을 포함한 양의 정수
+    @field:Min(0)
+    val originPrice: Int? = null,
+
+    @field:Pattern(regexp = "^.{1,100}\$")
+    val name: String? = null,
+
+    @field:Pattern(regexp = "^.{1,1000}\$")
+    val description: String? = null,
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    val expireDate: LocalDate? = null,
+
+    val size: ProductSize? = null,
+)

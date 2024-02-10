@@ -3,6 +3,7 @@ package com.assignment.caffe.application.domain.service
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.port.`in`.ProductUseCase
 import com.assignment.caffe.application.port.`in`.query.CreateProductQuery
+import com.assignment.caffe.application.port.`in`.query.UpdateProductQuery
 import com.assignment.caffe.application.port.`in`.query.toEntity
 import com.assignment.caffe.application.port.out.ProductPort
 import org.springframework.stereotype.Service
@@ -20,5 +21,9 @@ class ProductService(
         }
 
         productPort.insertProduct(product)
+    }
+
+    override fun updateProduct(updateProductQuery: UpdateProductQuery) {
+        TODO("Not yet implemented")
     }
 }

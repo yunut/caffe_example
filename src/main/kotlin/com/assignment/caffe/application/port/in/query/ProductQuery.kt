@@ -12,28 +12,16 @@ data class CreateProductQuery(
     val expireDate: LocalDate,
     val size: ProductSize,
     val createdBy: String,
-) {
-    companion object {
-        fun of(
-            category: String,
-            salePrice: Int,
-            originPrice: Int,
-            name: String,
-            description: String,
-            expireDate: LocalDate,
-            size: ProductSize,
-            createdBy: String,
-        ): CreateProductQuery {
-            return CreateProductQuery(
-                category,
-                salePrice,
-                originPrice,
-                name,
-                description,
-                expireDate,
-                size,
-                createdBy,
-            )
-        }
-    }
-}
+)
+
+data class UpdateProductQuery(
+    val id: String,
+    val category: String? = null,
+    val salePrice: Int? = null,
+    val originPrice: Int? = null,
+    val name: String? = null,
+    val description: String? = null,
+    val expireDate: LocalDate? = null,
+    val size: ProductSize? = null,
+    val createdBy: String? = null,
+)
