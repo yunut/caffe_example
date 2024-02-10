@@ -65,4 +65,13 @@ class ProductController(
         productUseCase.updateProduct(updateProductQuery)
         return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product updated successfully"))
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("{id}")
+    fun deleteProduct(
+        @PathVariable id: String,
+    ): ResponseBody {
+        productUseCase.deleteProduct(id)
+        return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product deleted successfully"))
+    }
 }

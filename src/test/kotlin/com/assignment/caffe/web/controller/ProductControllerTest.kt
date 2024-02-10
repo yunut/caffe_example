@@ -217,4 +217,31 @@ class ProductControllerTest : BehaviorSpec({
             }
         }
     }
+
+    Given("상품 삭제 요청 시") {
+
+        every { productUseCase.deleteProduct(any()) } just Runs
+
+        When("정상적으로 상품이 삭제 된 경우") {
+
+            Then("200 ok") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.delete("/product/1"),
+                ).andExpect(MockMvcResultMatchers.status().isOk)
+            }
+        }
+        When("정상적으로 상품이 삭제 되지 않은 경우") {
+
+            every { productUseCase.deleteProduct(any()) } throws Exception("상품 삭제 중 오류가 발생했습니다.")
+
+            Then("500 Internal Server Error") {
+                val exception = shouldThrow<ServletException> {
+                    mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/product/1"),
+                    )
+                }
+                exception.message!!.contains("Exception") shouldBe true
+            }
+        }
+    }
 })

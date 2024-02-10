@@ -12,4 +12,6 @@ interface ProductUseCase {
 
     @Throws(NotFoundException::class)
     fun updateProduct(updateProductQuery: UpdateProductQuery)
+
+    fun deleteProduct(id: String)
 }
