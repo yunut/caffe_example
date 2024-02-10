@@ -1,8 +1,13 @@
 package com.assignment.caffe.web.controller
 
 import com.assignment.caffe.adapter.`in`.web.ProductController
+import com.assignment.caffe.adapter.`in`.web.response.GetProductResponse
+import com.assignment.caffe.adapter.`in`.web.response.MetaBody
+import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
 import com.assignment.caffe.application.domain.exception.ConflictException
+import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.port.`in`.ProductUseCase
+import com.assignment.caffe.persistence.repository.fixture.createProductBuild
 import com.assignment.caffe.web.controller.fixture.createProductRequestBuild
 import com.assignment.caffe.web.controller.fixture.updateProductRequestBuild
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -18,6 +23,7 @@ import io.mockk.mockk
 import jakarta.servlet.ServletException
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -241,6 +247,42 @@ class ProductControllerTest : BehaviorSpec({
                     )
                 }
                 exception.message!!.contains("Exception") shouldBe true
+            }
+        }
+    }
+
+    Given("상품 조회 요청 시") {
+
+        every { productUseCase.getProduct(any()) } returns createProductBuild()
+
+        When("정상적으로 상품이 조회 된 경우") {
+
+            Then("200 ok와 데이터가 반환된다.") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.get("/product/1"),
+                ).andExpect(MockMvcResultMatchers.status().isOk)
+                    .andReturn().response.contentAsString shouldBe objectMapper.writeValueAsString(
+                    ResponseBody(
+                        MetaBody(
+                            HttpStatus.OK.value(),
+                            "Product retrieved successfully",
+                        ),
+                        GetProductResponse.toResponse(createProductBuild()),
+                    ),
+                )
+            }
+        }
+        When("상품이 조회 되지 않은 경우") {
+
+            every { productUseCase.getProduct(any()) } throws NotFoundException("상품이 존재하지 않습니다.")
+
+            Then("400에러와 Not Found 메시지가 전달된다.") {
+                val exception = shouldThrow<ServletException> {
+                    mockMvc.perform(
+                        MockMvcRequestBuilders.get("/product/1"),
+                    )
+                }
+                exception.message!!.contains("NotFoundException") shouldBe true
             }
         }
     }

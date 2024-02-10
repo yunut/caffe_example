@@ -2,6 +2,7 @@ package com.assignment.caffe.application.domain.service
 
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotFoundException
+import com.assignment.caffe.application.domain.model.Product
 import com.assignment.caffe.application.port.`in`.ProductUseCase
 import com.assignment.caffe.application.port.`in`.query.CreateProductQuery
 import com.assignment.caffe.application.port.`in`.query.UpdateProductQuery
@@ -40,5 +41,9 @@ class ProductService(
     @Transactional
     override fun deleteProduct(id: String) {
         productPort.deleteProduct(id)
+    }
+
+    override fun getProduct(id: String): Product {
+        TODO("Not yet implemented")
     }
 }

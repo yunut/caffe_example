@@ -2,6 +2,7 @@ package com.assignment.caffe.adapter.`in`.web
 
 import com.assignment.caffe.adapter.`in`.web.request.CreateProductRequest
 import com.assignment.caffe.adapter.`in`.web.request.UpdateProductRequest
+import com.assignment.caffe.adapter.`in`.web.response.GetProductResponse
 import com.assignment.caffe.adapter.`in`.web.response.MetaBody
 import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
 import com.assignment.caffe.application.port.`in`.ProductUseCase
@@ -73,5 +74,14 @@ class ProductController(
     ): ResponseBody {
         productUseCase.deleteProduct(id)
         return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product deleted successfully"))
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("{id}")
+    fun getProduct(
+        @PathVariable id: String,
+    ): ResponseBody {
+        val product = productUseCase.getProduct(id)
+        return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product retrieved successfully"), GetProductResponse.toResponse(product))
     }
 }
