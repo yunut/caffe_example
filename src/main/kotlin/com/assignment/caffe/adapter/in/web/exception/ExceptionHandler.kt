@@ -3,6 +3,7 @@ package com.assignment.caffe.adapter.`in`.web.exception
 import com.assignment.caffe.adapter.`in`.web.response.MetaBody
 import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
 import com.assignment.caffe.application.domain.exception.ConflictException
+import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.domain.exception.NotMatchException
 import jakarta.servlet.http.HttpServletResponse
 import org.hibernate.exception.ConstraintViolationException
@@ -76,6 +77,10 @@ class ExceptionHandler {
                 httpStatus = WebErrors.UNAUTHORIZED.httpStatus
             }
             is NoResourceFoundException -> {
+                body = ResponseBody(MetaBody(WebErrors.NOT_FOUND.httpStatus.value(), e.message ?: "No Message"), null)
+                httpStatus = WebErrors.NOT_FOUND.httpStatus
+            }
+            is NotFoundException -> {
                 body = ResponseBody(MetaBody(WebErrors.NOT_FOUND.httpStatus.value(), e.message ?: "No Message"), null)
                 httpStatus = WebErrors.NOT_FOUND.httpStatus
             }

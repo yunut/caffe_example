@@ -6,8 +6,11 @@ import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.domain.service.ProductService
 import com.assignment.caffe.application.port.out.ProductPort
 import com.assignment.caffe.persistence.repository.fixture.createProductBuild
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,6 +20,8 @@ class ProductServiceTest : BehaviorSpec({
 
     val productPort = mockk<ProductPort>()
     lateinit var productService: ProductService
+
+    val objectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
     beforeAny {
         productService = spyk(
@@ -128,6 +133,43 @@ class ProductServiceTest : BehaviorSpec({
             Then("요청 어댑터에 예외가 전달된다.") {
                 shouldThrow<SQLException> {
                     productService.deleteProduct(id)
+                }
+            }
+        }
+    }
+
+    Given("상품 조회 요청이 들어온 경우") {
+        val id = "1"
+
+        every { productPort.findProductById(any()) } returns createProductBuild()
+
+        When("정상적으로 처리되는 경우") {
+
+            Then("상품 데이터가 반환된다.") {
+                withContext(Dispatchers.IO) {
+                    objectMapper.writeValueAsString(productService.getProduct(id)) shouldBe objectMapper.writeValueAsString(createProductBuild())
+                }
+            }
+        }
+
+        When("상품 조회 시 존재하지 않는 상품이 있는 경우") {
+
+            every { productPort.findProductById(any()) } returns null
+
+            Then("NotFoundException 발생한다.") {
+                shouldThrow<NotFoundException> {
+                    productService.getProduct(id)
+                }
+            }
+        }
+
+        When("예외가 발생하는 경우") {
+
+            every { productPort.findProductById(any()) } throws SQLException()
+
+            Then("요청 어댑터에 예외가 전달된다.") {
+                shouldThrow<SQLException> {
+                    productService.getProduct(id)
                 }
             }
         }
