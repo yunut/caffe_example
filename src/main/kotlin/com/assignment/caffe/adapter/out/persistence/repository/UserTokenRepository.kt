@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserRefreshTokenRepository : JpaRepository<UserToken, Long> {
+interface UserTokenRepository : JpaRepository<UserToken, Long> {
 
     fun findByUserId(id: Int): UserToken?
 

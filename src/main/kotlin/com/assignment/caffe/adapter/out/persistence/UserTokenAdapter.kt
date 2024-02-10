@@ -1,13 +1,13 @@
 package com.assignment.caffe.adapter.out.persistence
 
-import com.assignment.caffe.adapter.out.persistence.repository.UserRefreshTokenRepository
+import com.assignment.caffe.adapter.out.persistence.repository.UserTokenRepository
 import com.assignment.caffe.application.domain.model.UserToken
 import com.assignment.caffe.application.port.out.UserTokenPort
 import org.springframework.stereotype.Component
 
 @Component
-class UserRefreshTokenAdapter(
-    private val userRefreshTokenRepository: UserRefreshTokenRepository,
+class UserTokenAdapter(
+    private val userRefreshTokenRepository: UserTokenRepository,
 ) : UserTokenPort {
     override fun findByUserId(id: Int): UserToken? {
         return userRefreshTokenRepository.findByUserId(id)

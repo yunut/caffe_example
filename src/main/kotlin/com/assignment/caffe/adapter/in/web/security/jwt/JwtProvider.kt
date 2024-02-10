@@ -1,7 +1,7 @@
 package com.assignment.caffe.adapter.`in`.web.security.jwt
 
 import com.assignment.caffe.adapter.`in`.web.security.jwt.config.JwtConfig
-import com.assignment.caffe.adapter.out.persistence.repository.UserRefreshTokenRepository
+import com.assignment.caffe.adapter.out.persistence.repository.UserTokenRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.*
 import jakarta.transaction.Transactional
@@ -18,7 +18,7 @@ import javax.crypto.spec.SecretKeySpec
 class JwtProvider(
     private val jwtConfig: JwtConfig,
     private val objectMapper: ObjectMapper,
-    private val userRefreshTokenRepository: UserRefreshTokenRepository, // 직접 참조 예외적 허용
+    private val userTokenRepository: UserTokenRepository, // 직접 참조 예외적 허용
 ) {
 
     val reissueLimit = jwtConfig.refreshExpirationHour.toLong() * 60 / jwtConfig.expirationHour.toLong()	// 재발급 한도
@@ -52,7 +52,7 @@ class JwtProvider(
     @Transactional
     fun reGenerateAccessToken(oldAccessToken: String): String {
         val subject = decodeJwtPayloadSubject(oldAccessToken)
-        userRefreshTokenRepository.findByUserIdAndReissueCountLessThan(subject.split(':')[0].toInt(), reissueLimit)
+        userTokenRepository.findByUserIdAndReissueCountLessThan(subject.split(':')[0].toInt(), reissueLimit)
             ?.increaseReissueCount() ?: throw ExpiredJwtException(null, null, "Refresh token is expired.")
         return generateAccessToken(subject)
     }
@@ -61,7 +61,7 @@ class JwtProvider(
     fun validateRefreshToken(refreshToken: String, oldAccessToken: String) {
         validateAndParseToken(refreshToken)
         val userId = decodeJwtPayloadSubject(oldAccessToken).split(':')[0]
-        userRefreshTokenRepository.findByUserIdAndReissueCountLessThan(userId.toInt(), reissueLimit)
+        userTokenRepository.findByUserIdAndReissueCountLessThan(userId.toInt(), reissueLimit)
             ?.takeIf { it.validateRefreshToken(refreshToken) } ?: throw ExpiredJwtException(null, null, "Refresh token is expired.")
     }
 
