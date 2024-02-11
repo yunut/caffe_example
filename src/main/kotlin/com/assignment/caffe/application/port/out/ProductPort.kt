@@ -20,4 +20,6 @@ interface ProductPort {
     fun getProduct(productId: String, userId: String): Product?
 
     fun getProductsWithCursor(userId: String, size: Int, sort: ProductSort, cursor: String?): List<Product>
+
+    fun searchProduct(keyword: String): List<Product>
 }

@@ -53,6 +53,6 @@ class ProductService(
     }
 
     override fun searchProduct(keyword: String): List<Product> {
-        TODO("Not yet implemented")
+        return productPort.searchProduct(keyword)
     }
 }

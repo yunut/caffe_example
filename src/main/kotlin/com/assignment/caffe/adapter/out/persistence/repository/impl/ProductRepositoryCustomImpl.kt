@@ -3,6 +3,7 @@ package com.assignment.caffe.adapter.out.persistence.repository.impl
 import com.assignment.caffe.adapter.out.persistence.repository.ProductRepositoryCustom
 import com.assignment.caffe.application.domain.enumeration.ProductSort
 import com.assignment.caffe.application.domain.model.Product
+import com.assignment.caffe.application.domain.model.QConsonant
 import com.assignment.caffe.application.domain.model.QProduct.product
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Component
@@ -43,5 +44,26 @@ class ProductRepositoryCustomImpl(
         return queryBuilder.orderBy(sortOrder)
             .limit(size.toLong())
             .fetch()
+    }
+
+    override fun searchProduct(keyword: String): List<Product> {
+        val query = query.selectFrom(product)
+
+        // keyword가 완벽한 한글로 이루어진 경우를 검색하는 조건 추가
+        if (keyword.matches(Regex("[가-힣]+"))) {
+            query.where(product.name.like("%$keyword%"))
+        } else {
+            // keyword가 자음으로만 이루어진 경우를 검색하는 조건 추가
+            if (keyword.matches(Regex("[ㄱ-ㅎ]+"))) {
+                query.leftJoin(QConsonant.consonant)
+                    .on(product.name.eq(QConsonant.consonant.name))
+                    .where(QConsonant.consonant.frontConsonant.like("%$keyword%"))
+            } else {
+                // 그 외의 경우에는 일반적인 키워드 검색을 수행
+                query.where(product.name.like("%$keyword%"))
+            }
+        }
+
+        return query.fetch()
     }
 }

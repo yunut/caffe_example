@@ -42,4 +42,8 @@ class ProductPersistenceAdapter(
     override fun getProductsWithCursor(userId: String, size: Int, sort: ProductSort, cursor: String?): List<Product> {
         return productRepository.findAllProductsWithCursor(userId, size, sort, cursor)
     }
+
+    override fun searchProduct(keyword: String): List<Product> {
+        return productRepository.searchProduct(keyword)
+    }
 }
