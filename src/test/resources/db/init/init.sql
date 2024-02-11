@@ -24,5 +24,10 @@ CREATE TABLE product (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (bar_code),
-    UNIQUE (name, created_by)
+    UNIQUE (name, created_by),
+    INDEX (sale_price, bar_code),
+    INDEX (origin_price, bar_code),
+    INDEX (expire_date, bar_code),
+    INDEX (created_at, bar_code),
+    INDEX (updated_at, bar_code)
 )
