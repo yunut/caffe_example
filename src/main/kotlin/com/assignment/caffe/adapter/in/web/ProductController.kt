@@ -81,7 +81,9 @@ class ProductController(
     fun getProduct(
         @PathVariable id: String,
     ): ResponseBody {
-        val product = productUseCase.getProduct(id)
+        val authentication = SecurityContextHolder.getContext().authentication
+
+        val product = productUseCase.getProduct(id, authentication.name)
         return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product retrieved successfully"), GetProductResponse.toResponse(product))
     }
 }

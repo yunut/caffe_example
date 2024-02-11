@@ -43,7 +43,7 @@ class ProductService(
         productPort.deleteProduct(id)
     }
 
-    override fun getProduct(id: String): Product {
-        return productPort.findProductById(id) ?: throw NotFoundException("Product with id $id not found")
+    override fun getProduct(productId: String, userId: String): Product {
+        return productPort.getProduct(productId, userId) ?: throw NotFoundException("Product with id $productId not found")
     }
 }

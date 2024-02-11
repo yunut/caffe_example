@@ -15,6 +15,7 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.sql.SQLException
+import java.util.UUID
 
 class ProductServiceTest : BehaviorSpec({
 
@@ -139,37 +140,38 @@ class ProductServiceTest : BehaviorSpec({
     }
 
     Given("상품 조회 요청이 들어온 경우") {
-        val id = "1"
+        val productId = UUID.randomUUID().toString()
+        val userId = UUID.randomUUID().toString()
 
-        every { productPort.findProductById(any()) } returns createProductBuild()
+        every { productPort.getProduct(any(), any()) } returns createProductBuild()
 
         When("정상적으로 처리되는 경우") {
 
             Then("상품 데이터가 반환된다.") {
                 withContext(Dispatchers.IO) {
-                    objectMapper.writeValueAsString(productService.getProduct(id)) shouldBe objectMapper.writeValueAsString(createProductBuild())
+                    objectMapper.writeValueAsString(productService.getProduct(productId, userId)) shouldBe objectMapper.writeValueAsString(createProductBuild())
                 }
             }
         }
 
         When("상품 조회 시 존재하지 않는 상품이 있는 경우") {
 
-            every { productPort.findProductById(any()) } returns null
+            every { productPort.getProduct(any(), any()) } returns null
 
             Then("NotFoundException 발생한다.") {
                 shouldThrow<NotFoundException> {
-                    productService.getProduct(id)
+                    productService.getProduct(productId, userId)
                 }
             }
         }
 
         When("예외가 발생하는 경우") {
 
-            every { productPort.findProductById(any()) } throws SQLException()
+            every { productPort.getProduct(any(), any()) } throws SQLException()
 
             Then("요청 어댑터에 예외가 전달된다.") {
                 shouldThrow<SQLException> {
-                    productService.getProduct(id)
+                    productService.getProduct(productId, userId)
                 }
             }
         }

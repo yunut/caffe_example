@@ -16,5 +16,5 @@ interface ProductUseCase {
 
     fun deleteProduct(id: String)
 
-    fun getProduct(id: String): Product
+    fun getProduct(productId: String, userId: String): Product
 }

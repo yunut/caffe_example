@@ -253,7 +253,7 @@ class ProductControllerTest : BehaviorSpec({
 
     Given("상품 조회 요청 시") {
 
-        every { productUseCase.getProduct(any()) } returns createProductBuild()
+        every { productUseCase.getProduct(any(), any()) } returns createProductBuild()
 
         When("정상적으로 상품이 조회 된 경우") {
 
@@ -274,7 +274,7 @@ class ProductControllerTest : BehaviorSpec({
         }
         When("상품이 조회 되지 않은 경우") {
 
-            every { productUseCase.getProduct(any()) } throws NotFoundException("상품이 존재하지 않습니다.")
+            every { productUseCase.getProduct(any(), any()) } throws NotFoundException("상품이 존재하지 않습니다.")
 
             Then("400에러와 Not Found 메시지가 전달된다.") {
                 val exception = shouldThrow<ServletException> {
