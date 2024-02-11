@@ -29,8 +29,9 @@ CREATE TABLE product (
 );
 
 CREATE TABLE consonant (
+    `id` VARCHAR(36) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `front_consonant` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (name),
+    PRIMARY KEY (id),
     INDEX idx_consonant_front_consonant (front_consonant)
 );
