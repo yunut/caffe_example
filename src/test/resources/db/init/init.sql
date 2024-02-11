@@ -24,5 +24,13 @@ CREATE TABLE product (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (bar_code),
-    UNIQUE (name, created_by)
-)
+    UNIQUE (name, created_by),
+    INDEX idx_product_name (name)
+);
+
+CREATE TABLE consonant (
+    `name` VARCHAR(255) NOT NULL,
+    `front_consonant` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (name),
+    INDEX idx_consonant_front_consonant (front_consonant)
+);
