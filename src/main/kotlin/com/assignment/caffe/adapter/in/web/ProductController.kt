@@ -2,6 +2,7 @@ package com.assignment.caffe.adapter.`in`.web
 
 import com.assignment.caffe.adapter.`in`.web.request.CreateProductRequest
 import com.assignment.caffe.adapter.`in`.web.request.UpdateProductRequest
+import com.assignment.caffe.adapter.`in`.web.response.GetProductListResponse
 import com.assignment.caffe.adapter.`in`.web.response.GetProductResponse
 import com.assignment.caffe.adapter.`in`.web.response.MetaBody
 import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
@@ -85,5 +86,14 @@ class ProductController(
 
         val product = productUseCase.getProduct(id, authentication.name)
         return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product retrieved successfully"), GetProductResponse.toResponse(product))
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/list")
+    fun getProductList(): ResponseBody {
+        val authentication = SecurityContextHolder.getContext().authentication
+
+        val products = productUseCase.getProducts(authentication.name)
+        return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product list retrieved successfully"), GetProductListResponse.toResponse(products))
     }
 }

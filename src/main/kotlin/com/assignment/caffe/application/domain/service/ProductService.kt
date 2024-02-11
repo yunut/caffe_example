@@ -46,4 +46,8 @@ class ProductService(
     override fun getProduct(productId: String, userId: String): Product {
         return productPort.getProduct(productId, userId) ?: throw NotFoundException("Product with id $productId not found")
     }
+
+    override fun getProducts(userId: String): List<Product> {
+        TODO("Not yet implemented")
+    }
 }

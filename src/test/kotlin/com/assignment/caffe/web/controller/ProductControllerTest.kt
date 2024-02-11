@@ -1,13 +1,14 @@
 package com.assignment.caffe.web.controller
 
 import com.assignment.caffe.adapter.`in`.web.ProductController
+import com.assignment.caffe.adapter.`in`.web.response.GetProductListResponse
 import com.assignment.caffe.adapter.`in`.web.response.GetProductResponse
 import com.assignment.caffe.adapter.`in`.web.response.MetaBody
 import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.port.`in`.ProductUseCase
-import com.assignment.caffe.persistence.repository.fixture.createProductBuild
+import com.assignment.caffe.persistence.repository.fixture.baseProductBuild
 import com.assignment.caffe.web.controller.fixture.createProductRequestBuild
 import com.assignment.caffe.web.controller.fixture.updateProductRequestBuild
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -31,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import java.sql.SQLException
 
 @SpringBootTest
 @AutoConfigureWebTestClient
@@ -253,7 +255,8 @@ class ProductControllerTest : BehaviorSpec({
 
     Given("상품 조회 요청 시") {
 
-        every { productUseCase.getProduct(any(), any()) } returns createProductBuild()
+        val product = baseProductBuild()
+        every { productUseCase.getProduct(any(), any()) } returns product
 
         When("정상적으로 상품이 조회 된 경우") {
 
@@ -267,7 +270,7 @@ class ProductControllerTest : BehaviorSpec({
                             HttpStatus.OK.value(),
                             "Product retrieved successfully",
                         ),
-                        GetProductResponse.toResponse(createProductBuild()),
+                        GetProductResponse.toResponse(product),
                     ),
                 )
             }
@@ -283,6 +286,65 @@ class ProductControllerTest : BehaviorSpec({
                     )
                 }
                 exception.message!!.contains("NotFoundException") shouldBe true
+            }
+        }
+    }
+
+    Given("상품 리스트 조회 요청 시") {
+
+        val products = listOf(baseProductBuild(), baseProductBuild())
+
+        every { productUseCase.getProducts(any()) } returns products
+
+        When("정상적으로 상품 리스트가 조회 된 경우 데이터가 존재하면") {
+
+            Then("200 ok와 데이터가 반환된다.") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.get("/product/list"),
+                ).andExpect(MockMvcResultMatchers.status().isOk)
+                    .andReturn().response.contentAsString shouldBe objectMapper.writeValueAsString(
+                    ResponseBody(
+                        MetaBody(
+                            HttpStatus.OK.value(),
+                            "Product list retrieved successfully",
+                        ),
+                        GetProductListResponse.toResponse(products),
+                    ),
+                )
+            }
+        }
+
+        When("정상적으로 상품 리스트가 조회 된 경우 데이터가 존재하지 않으면") {
+
+            every { productUseCase.getProducts(any()) } returns emptyList()
+
+            Then("200 ok와 빈 배열이 반환된다.") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.get("/product/list"),
+                ).andExpect(MockMvcResultMatchers.status().isOk)
+                    .andReturn().response.contentAsString shouldBe objectMapper.writeValueAsString(
+                    ResponseBody(
+                        MetaBody(
+                            HttpStatus.OK.value(),
+                            "Product list retrieved successfully",
+                        ),
+                        GetProductListResponse.toResponse(emptyList()),
+                    ),
+                )
+            }
+        }
+
+        When("상품 리스트가 정상적으로 조회 되지 않은 경우") {
+
+            every { productUseCase.getProducts(any()) } throws SQLException("상품 리스트 조회 중 오류가 발생했습니다.")
+
+            Then("500 에러와 Exception 메시지가 전달된다.") {
+                val exception = shouldThrow<ServletException> {
+                    mockMvc.perform(
+                        MockMvcRequestBuilders.get("/product/list"),
+                    )
+                }
+                exception.message!!.contains("SQLException") shouldBe true
             }
         }
     }

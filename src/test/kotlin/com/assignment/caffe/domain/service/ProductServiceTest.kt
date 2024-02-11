@@ -5,7 +5,7 @@ import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.domain.service.ProductService
 import com.assignment.caffe.application.port.out.ProductPort
-import com.assignment.caffe.persistence.repository.fixture.createProductBuild
+import com.assignment.caffe.persistence.repository.fixture.baseProductBuild
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.kotest.assertions.throwables.shouldThrow
@@ -76,11 +76,11 @@ class ProductServiceTest : BehaviorSpec({
 
         every { productPort.updateProduct(any()) } just Runs
         every { productPort.existsProductById(any()) } returns true
-        every { productPort.findProductById(any()) } returns createProductBuild()
+        every { productPort.findProductById(any()) } returns baseProductBuild()
 
         When("정상적으로 처리되는 경우") {
 
-            every { productPort.findProductById(any()) } returns createProductBuild()
+            every { productPort.findProductById(any()) } returns baseProductBuild()
 
             Then("함수가 아무것도 반환하지 않고 종료된다.") {
                 withContext(Dispatchers.IO) {
@@ -142,14 +142,14 @@ class ProductServiceTest : BehaviorSpec({
     Given("상품 조회 요청이 들어온 경우") {
         val productId = UUID.randomUUID().toString()
         val userId = UUID.randomUUID().toString()
-
-        every { productPort.getProduct(any(), any()) } returns createProductBuild()
+        val product = baseProductBuild()
+        every { productPort.getProduct(any(), any()) } returns product
 
         When("정상적으로 처리되는 경우") {
 
             Then("상품 데이터가 반환된다.") {
                 withContext(Dispatchers.IO) {
-                    objectMapper.writeValueAsString(productService.getProduct(productId, userId)) shouldBe objectMapper.writeValueAsString(createProductBuild())
+                    objectMapper.writeValueAsString(productService.getProduct(productId, userId)) shouldBe objectMapper.writeValueAsString(product)
                 }
             }
         }

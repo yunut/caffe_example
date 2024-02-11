@@ -32,3 +32,36 @@ data class GetProductResponse(
         }
     }
 }
+
+data class GetProductListResponse(
+    val products: List<GetProductResponse>,
+) {
+    companion object {
+        fun toResponse(
+            products: List<Product>,
+        ): List<GetProductListBody> {
+            return products.map {
+                GetProductListBody(
+                    id = it.barCode.toString(),
+                    category = it.category,
+                    salePrice = it.salePrice,
+                    originPrice = it.originPrice,
+                    name = it.name,
+                    expireDate = it.expireDate,
+                    size = it.size,
+                )
+            }
+        }
+    }
+}
+
+data class GetProductListBody(
+    val id: String,
+    val category: String,
+    val salePrice: Int,
+    val originPrice: Int,
+    val name: String,
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    val expireDate: LocalDate,
+    val size: String,
+)

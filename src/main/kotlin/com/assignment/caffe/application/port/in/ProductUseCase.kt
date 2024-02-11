@@ -17,4 +17,6 @@ interface ProductUseCase {
     fun deleteProduct(id: String)
 
     fun getProduct(productId: String, userId: String): Product
+
+    fun getProducts(userId: String): List<Product>
 }
