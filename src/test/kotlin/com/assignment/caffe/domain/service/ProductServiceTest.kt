@@ -1,6 +1,7 @@
 package com.assignment.caffe.domain.service
 
 import com.appmattus.kotlinfixture.kotlinFixture
+import com.assignment.caffe.application.domain.enumeration.ProductSort
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.domain.service.ProductService
@@ -172,6 +173,36 @@ class ProductServiceTest : BehaviorSpec({
             Then("요청 어댑터에 예외가 전달된다.") {
                 shouldThrow<SQLException> {
                     productService.getProduct(productId, userId)
+                }
+            }
+        }
+    }
+
+    Given("상품 목록 조회 요청이 들어온 경우") {
+        val userId = UUID.randomUUID().toString()
+        val size = 10
+        val sort = ProductSort.NAME_ASC
+        val products =
+            // 상품 목록 100개 이름 바꿔서
+            (1..100).map { baseProductBuild { name = "상품$it" } }
+        every { productPort.getProductsWithCursor(any(), any(), any(), any()) } returns products
+
+        When("정상적으로 처리되는 경우") {
+
+            Then("상품 목록 데이터가 반환된다.") {
+                withContext(Dispatchers.IO) {
+                    objectMapper.writeValueAsString(productService.getProductsWithCursor(userId, size, sort, null)) shouldBe objectMapper.writeValueAsString(products)
+                }
+            }
+        }
+
+        When("예외가 발생하는 경우") {
+
+            every { productPort.getProductsWithCursor(any(), any(), any(), any()) } throws SQLException()
+
+            Then("요청 어댑터에 예외가 전달된다.") {
+                shouldThrow<SQLException> {
+                    productService.getProductsWithCursor(userId, size, sort, null)
                 }
             }
         }

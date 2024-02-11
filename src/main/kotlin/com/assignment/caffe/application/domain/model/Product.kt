@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
@@ -43,6 +44,12 @@ class Product private constructor(
 
     @Column(name = "created_by")
     val createdBy: String,
+
+    @Column(name = "created_at")
+    val createdAt: LocalDateTime? = null,
+
+    @Column(name = "updated_at")
+    val updatedAt: LocalDateTime? = null,
 ) {
 
     companion object {
@@ -56,6 +63,8 @@ class Product private constructor(
             size: ProductSize,
             createdBy: String,
             barCode: UUID? = null,
+            createdAt: LocalDateTime? = null,
+            updatedAt: LocalDateTime? = null,
         ): Product {
             return Product(
                 category = category,
@@ -67,6 +76,8 @@ class Product private constructor(
                 size = size.name,
                 createdBy = createdBy,
                 barCode = barCode,
+                createdAt = createdAt,
+                updatedAt = updatedAt,
             )
         }
     }

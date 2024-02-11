@@ -3,6 +3,7 @@ package com.assignment.caffe.adapter.`in`.web.response
 import com.assignment.caffe.application.domain.model.Product
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class GetProductResponse(
     val id: String,
@@ -49,6 +50,8 @@ data class GetProductListResponse(
                     name = it.name,
                     expireDate = it.expireDate,
                     size = it.size,
+                    createdAt = it.createdAt!!,
+                    updatedAt = it.updatedAt!!,
                 )
             }
         }
@@ -64,4 +67,8 @@ data class GetProductListBody(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val expireDate: LocalDate,
     val size: String,
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    val createdAt: LocalDateTime,
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    val updatedAt: LocalDateTime,
 )

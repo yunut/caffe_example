@@ -4,6 +4,7 @@ import com.assignment.caffe.application.domain.enumeration.ProductSize
 import com.assignment.caffe.application.domain.model.Product
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 inline fun baseProductBuild(block: BaseProductBuilder.() -> Unit = {}) =
@@ -19,8 +20,10 @@ class BaseProductBuilder {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     var expireDate: LocalDate = LocalDate.now()
-    val size: ProductSize = ProductSize.SMALL
-    val createdBy = "user id"
+    var size: ProductSize = ProductSize.SMALL
+    var createdBy = "user id"
+    var createdAt = LocalDateTime.now()
+    var updatedAt = LocalDateTime.now()
 
     fun build(): Product = Product.of(
         barCode = barCode,
@@ -32,5 +35,7 @@ class BaseProductBuilder {
         expireDate = expireDate,
         size = size,
         createdBy = createdBy,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
     )
 }

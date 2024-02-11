@@ -1,6 +1,7 @@
 package com.assignment.caffe.adapter.out.persistence
 
 import com.assignment.caffe.adapter.out.persistence.repository.ProductRepository
+import com.assignment.caffe.application.domain.enumeration.ProductSort
 import com.assignment.caffe.application.domain.model.Product
 import com.assignment.caffe.application.port.out.ProductPort
 import org.springframework.stereotype.Component
@@ -36,5 +37,9 @@ class ProductPersistenceAdapter(
 
     override fun getProduct(productId: String, userId: String): Product? {
         return productRepository.findProductByBarCodeAndCreatedBy(UUID.fromString(productId), userId)
+    }
+
+    override fun getProductsWithCursor(userId: String, size: Int, sort: ProductSort, cursor: String?): List<Product> {
+        return productRepository.findAllProductsWithCursor(userId, size, sort, cursor)
     }
 }

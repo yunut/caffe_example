@@ -1,5 +1,6 @@
 package com.assignment.caffe.persistence.repository
 
+import com.assignment.caffe.adapter.out.persistence.config.QueryDslConfig
 import com.assignment.caffe.adapter.out.persistence.repository.UserRepository
 import com.assignment.caffe.application.domain.enumeration.UserRole
 import com.assignment.caffe.application.domain.model.User
@@ -10,10 +11,12 @@ import kotlinx.coroutines.withContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.context.annotation.Import
 import org.springframework.dao.DataIntegrityViolationException
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(QueryDslConfig::class)
 class UserRepositoryTest(
     @Autowired private val userRepository: UserRepository,
 ) : BehaviorSpec() {

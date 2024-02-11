@@ -48,7 +48,7 @@ class ProductService(
         return productPort.getProduct(productId, userId) ?: throw NotFoundException("Product with id $productId not found")
     }
 
-    override fun getProductsWithCursor(userId: String, page: Int, size: Int, sort: ProductSort): List<Product> {
-        TODO("Not yet implemented")
+    override fun getProductsWithCursor(userId: String, size: Int, sort: ProductSort, cursor: String?): List<Product> {
+        return productPort.getProductsWithCursor(userId, size, sort, cursor)
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface ProductRepository : JpaRepository<Product, UUID> {
+interface ProductRepository : JpaRepository<Product, UUID>, ProductRepositoryCustom {
 
     fun existsByName(name: String): Boolean
 

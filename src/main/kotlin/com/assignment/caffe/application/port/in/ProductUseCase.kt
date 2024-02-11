@@ -19,5 +19,5 @@ interface ProductUseCase {
 
     fun getProduct(productId: String, userId: String): Product
 
-    fun getProductsWithCursor(userId: String, page: Int, size: Int, sort: ProductSort): List<Product>
+    fun getProductsWithCursor(userId: String, size: Int, sort: ProductSort, cursor: String?): List<Product>
 }

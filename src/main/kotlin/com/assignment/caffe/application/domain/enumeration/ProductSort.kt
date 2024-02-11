@@ -1,5 +1,10 @@
 package com.assignment.caffe.application.domain.enumeration
 
 enum class ProductSort {
-    SALE_PRICE, ORIGIN_PRICE, EXPIRE_DATE, CREATED_AT, UPDATED_AT
+    NAME_ASC,
+    NAME_DESC,
+    CREATED_AT_ASC,
+    UPDATED_AT_ASC,
+    CREATED_AT_DESC,
+    UPDATED_AT_DESC,
 }
