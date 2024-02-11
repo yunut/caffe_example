@@ -15,4 +15,6 @@ interface ProductPort {
     fun findProductById(id: String): Product?
 
     fun deleteProduct(id: String)
+
+    fun getProduct(productId: String, userId: String): Product?
 }
