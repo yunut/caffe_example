@@ -13,11 +13,11 @@ CREATE TABLE user (
 
 CREATE TABLE product (
     `bar_code` VARCHAR(36) NOT NULL,
-    `category` VARCHAR(255) NOT NULL,
+    `category` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
     `sale_price` INT NOT NULL,
     `origin_price` INT NOT NULL,
-    `name` VARCHAR(255) NOT NULL,
-    `description` TEXT NOT NULL,
+    `name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+    `description` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
     `expire_date` DATE NOT NULL,
     `size` VARCHAR(20) NOT NULL,
     `created_by` VARCHAR(36) NOT NULL,
@@ -29,9 +29,8 @@ CREATE TABLE product (
 );
 
 CREATE TABLE consonant (
-    `id` VARCHAR(36) NOT NULL,
-    `name` VARCHAR(255) NOT NULL,
-    `front_consonant` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id),
+    `name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+    `front_consonant` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+    PRIMARY KEY (name),
     INDEX idx_consonant_front_consonant (front_consonant)
 );
