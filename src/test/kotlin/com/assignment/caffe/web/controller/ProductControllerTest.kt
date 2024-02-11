@@ -5,6 +5,7 @@ import com.assignment.caffe.adapter.`in`.web.response.GetProductListResponse
 import com.assignment.caffe.adapter.`in`.web.response.GetProductResponse
 import com.assignment.caffe.adapter.`in`.web.response.MetaBody
 import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
+import com.assignment.caffe.application.domain.enumeration.ProductSort
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.port.`in`.ProductUseCase
@@ -300,7 +301,10 @@ class ProductControllerTest : BehaviorSpec({
 
             Then("200 ok와 데이터가 반환된다.") {
                 mockMvc.perform(
-                    MockMvcRequestBuilders.get("/product/list"),
+                    MockMvcRequestBuilders.get("/product/list")
+                        .param("cursor", "1")
+                        .param("size", "10")
+                        .param("sort", ProductSort.CREATED_AT_DESC.name),
                 ).andExpect(MockMvcResultMatchers.status().isOk)
                     .andReturn().response.contentAsString shouldBe objectMapper.writeValueAsString(
                     ResponseBody(
@@ -320,7 +324,10 @@ class ProductControllerTest : BehaviorSpec({
 
             Then("200 ok와 빈 배열이 반환된다.") {
                 mockMvc.perform(
-                    MockMvcRequestBuilders.get("/product/list"),
+                    MockMvcRequestBuilders.get("/product/list")
+                        .param("cursor", "1")
+                        .param("size", "10")
+                        .param("sort", ProductSort.CREATED_AT_DESC.name),
                 ).andExpect(MockMvcResultMatchers.status().isOk)
                     .andReturn().response.contentAsString shouldBe objectMapper.writeValueAsString(
                     ResponseBody(
@@ -341,7 +348,10 @@ class ProductControllerTest : BehaviorSpec({
             Then("500 에러와 Exception 메시지가 전달된다.") {
                 val exception = shouldThrow<ServletException> {
                     mockMvc.perform(
-                        MockMvcRequestBuilders.get("/product/list"),
+                        MockMvcRequestBuilders.get("/product/list")
+                            .param("cursor", "1")
+                            .param("size", "10")
+                            .param("sort", ProductSort.CREATED_AT_DESC.name),
                     )
                 }
                 exception.message!!.contains("SQLException") shouldBe true

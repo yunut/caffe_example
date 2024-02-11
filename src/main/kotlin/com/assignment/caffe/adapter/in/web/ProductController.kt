@@ -10,6 +10,7 @@ import com.assignment.caffe.application.domain.enumeration.ProductSort
 import com.assignment.caffe.application.port.`in`.ProductUseCase
 import com.assignment.caffe.application.port.`in`.query.CreateProductQuery
 import com.assignment.caffe.application.port.`in`.query.UpdateProductQuery
+import jakarta.validation.constraints.Max
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.validation.annotation.Validated
@@ -92,13 +93,15 @@ class ProductController(
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/list")
     fun getProductList(
-        @RequestParam(required = false, defaultValue = "0") page: Int,
-        @RequestParam(required = false, defaultValue = "10") size: Int,
-        @RequestParam(required = false, defaultValue = "CREATED_AT") sort: ProductSort,
+        @RequestParam(required = false) cursor: String? = null,
+        @RequestParam(required = false, defaultValue = "10")
+        @Max(100)
+        size: Int,
+        @RequestParam(required = false, defaultValue = "CREATED_AT_DESC") sort: ProductSort,
     ): ResponseBody {
         val authentication = SecurityContextHolder.getContext().authentication
 
-        val products = productUseCase.getProductsWithCursor(authentication.name, page, size, sort)
+        val products = productUseCase.getProductsWithCursor(authentication.name, size, sort, cursor)
         return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product list retrieved successfully"), GetProductListResponse.toResponse(products))
     }
 }
