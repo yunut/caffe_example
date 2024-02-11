@@ -1,5 +1,6 @@
 package com.assignment.caffe.application.domain.service
 
+import com.assignment.caffe.application.domain.enum.ProductSort
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.domain.model.Product
@@ -47,7 +48,7 @@ class ProductService(
         return productPort.getProduct(productId, userId) ?: throw NotFoundException("Product with id $productId not found")
     }
 
-    override fun getProducts(userId: String): List<Product> {
+    override fun getProductsWithCursor(userId: String, page: Int, size: Int, sort: ProductSort): List<Product> {
         TODO("Not yet implemented")
     }
 }

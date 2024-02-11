@@ -294,7 +294,7 @@ class ProductControllerTest : BehaviorSpec({
 
         val products = listOf(baseProductBuild(), baseProductBuild())
 
-        every { productUseCase.getProducts(any()) } returns products
+        every { productUseCase.getProductsWithCursor(any(), any(), any(), any()) } returns products
 
         When("정상적으로 상품 리스트가 조회 된 경우 데이터가 존재하면") {
 
@@ -316,7 +316,7 @@ class ProductControllerTest : BehaviorSpec({
 
         When("정상적으로 상품 리스트가 조회 된 경우 데이터가 존재하지 않으면") {
 
-            every { productUseCase.getProducts(any()) } returns emptyList()
+            every { productUseCase.getProductsWithCursor(any(), any(), any(), any()) } returns emptyList()
 
             Then("200 ok와 빈 배열이 반환된다.") {
                 mockMvc.perform(
@@ -336,7 +336,7 @@ class ProductControllerTest : BehaviorSpec({
 
         When("상품 리스트가 정상적으로 조회 되지 않은 경우") {
 
-            every { productUseCase.getProducts(any()) } throws SQLException("상품 리스트 조회 중 오류가 발생했습니다.")
+            every { productUseCase.getProductsWithCursor(any(), any(), any(), any()) } throws SQLException("상품 리스트 조회 중 오류가 발생했습니다.")
 
             Then("500 에러와 Exception 메시지가 전달된다.") {
                 val exception = shouldThrow<ServletException> {

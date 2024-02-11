@@ -6,6 +6,7 @@ import com.assignment.caffe.adapter.`in`.web.response.GetProductListResponse
 import com.assignment.caffe.adapter.`in`.web.response.GetProductResponse
 import com.assignment.caffe.adapter.`in`.web.response.MetaBody
 import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
+import com.assignment.caffe.application.domain.enum.ProductSort
 import com.assignment.caffe.application.port.`in`.ProductUseCase
 import com.assignment.caffe.application.port.`in`.query.CreateProductQuery
 import com.assignment.caffe.application.port.`in`.query.UpdateProductQuery
@@ -90,10 +91,14 @@ class ProductController(
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/list")
-    fun getProductList(): ResponseBody {
+    fun getProductList(
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "10") size: Int,
+        @RequestParam(required = false, defaultValue = "CREATED_AT") sort: ProductSort,
+    ): ResponseBody {
         val authentication = SecurityContextHolder.getContext().authentication
 
-        val products = productUseCase.getProducts(authentication.name)
+        val products = productUseCase.getProductsWithCursor(authentication.name, page, size, sort)
         return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product list retrieved successfully"), GetProductListResponse.toResponse(products))
     }
 }

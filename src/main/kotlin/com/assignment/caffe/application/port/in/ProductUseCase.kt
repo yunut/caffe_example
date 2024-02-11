@@ -1,5 +1,6 @@
 package com.assignment.caffe.application.port.`in`
 
+import com.assignment.caffe.application.domain.enum.ProductSort
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.domain.model.Product
@@ -18,5 +19,5 @@ interface ProductUseCase {
 
     fun getProduct(productId: String, userId: String): Product
 
-    fun getProducts(userId: String): List<Product>
+    fun getProductsWithCursor(userId: String, page: Int, size: Int, sort: ProductSort): List<Product>
 }
