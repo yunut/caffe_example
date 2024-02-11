@@ -2,7 +2,7 @@ package com.assignment.caffe.web.controller.fixture
 
 import com.assignment.caffe.adapter.`in`.web.request.CreateProductRequest
 import com.assignment.caffe.adapter.`in`.web.request.UpdateProductRequest
-import com.assignment.caffe.application.domain.enum.ProductSize
+import com.assignment.caffe.application.domain.enumeration.ProductSize
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate
 

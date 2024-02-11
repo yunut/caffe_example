@@ -1,6 +1,6 @@
 package com.assignment.caffe.application.port.`in`.query
 
-import com.assignment.caffe.application.domain.enum.UserRole
+import com.assignment.caffe.application.domain.enumeration.UserRole
 import com.assignment.caffe.application.domain.model.Product
 import com.assignment.caffe.application.domain.model.User
 import org.springframework.security.crypto.password.PasswordEncoder

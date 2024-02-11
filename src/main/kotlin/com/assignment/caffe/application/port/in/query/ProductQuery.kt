@@ -1,6 +1,6 @@
 package com.assignment.caffe.application.port.`in`.query
 
-import com.assignment.caffe.application.domain.enum.ProductSize
+import com.assignment.caffe.application.domain.enumeration.ProductSize
 import java.time.LocalDate
 
 data class CreateProductQuery(

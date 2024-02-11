@@ -1,6 +1,6 @@
 package com.assignment.caffe.adapter.`in`.web.request
 
-import com.assignment.caffe.application.domain.enum.ProductSize
+import com.assignment.caffe.application.domain.enumeration.ProductSize
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank

@@ -6,7 +6,7 @@ import com.assignment.caffe.adapter.`in`.web.response.GetProductListResponse
 import com.assignment.caffe.adapter.`in`.web.response.GetProductResponse
 import com.assignment.caffe.adapter.`in`.web.response.MetaBody
 import com.assignment.caffe.adapter.`in`.web.response.ResponseBody
-import com.assignment.caffe.application.domain.enum.ProductSort
+import com.assignment.caffe.application.domain.enumeration.ProductSort
 import com.assignment.caffe.application.port.`in`.ProductUseCase
 import com.assignment.caffe.application.port.`in`.query.CreateProductQuery
 import com.assignment.caffe.application.port.`in`.query.UpdateProductQuery

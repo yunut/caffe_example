@@ -1,7 +1,7 @@
 package com.assignment.caffe.persistence.repository
 
 import com.assignment.caffe.adapter.out.persistence.repository.UserRepository
-import com.assignment.caffe.application.domain.enum.UserRole
+import com.assignment.caffe.application.domain.enumeration.UserRole
 import com.assignment.caffe.application.domain.model.User
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec

@@ -1,6 +1,6 @@
 package com.assignment.caffe.application.domain.model
 
-import com.assignment.caffe.application.domain.enum.UserRole
+import com.assignment.caffe.application.domain.enumeration.UserRole
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

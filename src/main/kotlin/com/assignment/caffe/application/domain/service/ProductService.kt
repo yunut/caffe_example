@@ -1,6 +1,6 @@
 package com.assignment.caffe.application.domain.service
 
-import com.assignment.caffe.application.domain.enum.ProductSort
+import com.assignment.caffe.application.domain.enumeration.ProductSort
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotFoundException
 import com.assignment.caffe.application.domain.model.Product

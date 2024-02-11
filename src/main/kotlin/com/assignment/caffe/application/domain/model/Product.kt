@@ -1,6 +1,6 @@
 package com.assignment.caffe.application.domain.model
 
-import com.assignment.caffe.application.domain.enum.ProductSize
+import com.assignment.caffe.application.domain.enumeration.ProductSize
 import com.assignment.caffe.application.port.`in`.query.UpdateProductQuery
 import jakarta.persistence.*
 import org.hibernate.annotations.GenericGenerator

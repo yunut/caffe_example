@@ -1,7 +1,7 @@
 package com.assignment.caffe.application.domain.service
 
 import com.assignment.caffe.application.domain.dto.UserTokenDto
-import com.assignment.caffe.application.domain.enum.UserRole
+import com.assignment.caffe.application.domain.enumeration.UserRole
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotMatchException
 import com.assignment.caffe.application.domain.model.UserBlacklistToken

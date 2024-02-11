@@ -2,7 +2,7 @@ package com.assignment.caffe.domain.service
 
 import com.appmattus.kotlinfixture.kotlinFixture
 import com.assignment.caffe.application.domain.dto.UserTokenDto
-import com.assignment.caffe.application.domain.enum.UserRole
+import com.assignment.caffe.application.domain.enumeration.UserRole
 import com.assignment.caffe.application.domain.exception.ConflictException
 import com.assignment.caffe.application.domain.exception.NotMatchException
 import com.assignment.caffe.application.domain.model.User

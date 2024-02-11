@@ -1,6 +1,6 @@
 package com.assignment.caffe.persistence.repository.fixture
 
-import com.assignment.caffe.application.domain.enum.ProductSize
+import com.assignment.caffe.application.domain.enumeration.ProductSize
 import com.assignment.caffe.application.domain.model.Product
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate
