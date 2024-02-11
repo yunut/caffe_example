@@ -104,4 +104,13 @@ class ProductController(
         val products = productUseCase.getProductsWithCursor(authentication.name, size, sort, cursor)
         return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product list retrieved successfully"), GetProductListResponse.toResponse(products))
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/search")
+    fun searchProduct(
+        @RequestParam keyword: String,
+    ): ResponseBody {
+        val products = productUseCase.searchProduct(keyword)
+        return ResponseBody(MetaBody(HttpStatus.OK.value(), "Product list retrieved successfully"), GetProductListResponse.toResponse(products))
+    }
 }

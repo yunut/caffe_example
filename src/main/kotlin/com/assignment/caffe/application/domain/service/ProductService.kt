@@ -51,4 +51,8 @@ class ProductService(
     override fun getProductsWithCursor(userId: String, size: Int, sort: ProductSort, cursor: String?): List<Product> {
         return productPort.getProductsWithCursor(userId, size, sort, cursor)
     }
+
+    override fun searchProduct(keyword: String): List<Product> {
+        TODO("Not yet implemented")
+    }
 }

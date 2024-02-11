@@ -358,4 +358,60 @@ class ProductControllerTest : BehaviorSpec({
             }
         }
     }
+
+    Given("상품 검색 시 ") {
+
+        val searchName = "상품"
+        When("검색된 상품이 있는 경우") {
+            val products = listOf(baseProductBuild(), baseProductBuild())
+            every { productUseCase.searchProduct(any()) } returns products
+
+            Then("200 ok와 데이터가 반환된다.") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.get("/product/search")
+                        .param("keyword", "상품"),
+                ).andExpect(MockMvcResultMatchers.status().isOk)
+                    .andReturn().response.contentAsString shouldBe objectMapper.writeValueAsString(
+                    ResponseBody(
+                        MetaBody(
+                            HttpStatus.OK.value(),
+                            "Product list retrieved successfully",
+                        ),
+                        GetProductListResponse.toResponse(products),
+                    ),
+                )
+            }
+        }
+        When("검색된 상품이 없는 경우") {
+            every { productUseCase.searchProduct(any()) } returns emptyList()
+
+            Then("200 ok와 빈 배열이 반환된다.") {
+                mockMvc.perform(
+                    MockMvcRequestBuilders.get("/product/search")
+                        .param("keyword", "상품"),
+                ).andExpect(MockMvcResultMatchers.status().isOk)
+                    .andReturn().response.contentAsString shouldBe objectMapper.writeValueAsString(
+                    ResponseBody(
+                        MetaBody(
+                            HttpStatus.OK.value(),
+                            "Product list retrieved successfully",
+                        ),
+                        GetProductListResponse.toResponse(emptyList()),
+                    ),
+                )
+            }
+        }
+        When("상품 검색이 정상적으로 되지 않은 경우") {
+            every { productUseCase.searchProduct(any()) } throws SQLException("상품 검색 중 오류가 발생했습니다.")
+            Then("500 에러와 Exception 메시지가 전달된다.") {
+                val exception = shouldThrow<ServletException> {
+                    mockMvc.perform(
+                        MockMvcRequestBuilders.get("/product/search")
+                            .param("keyword", "상품"),
+                    )
+                }
+                exception.message!!.contains("SQLException") shouldBe true
+            }
+        }
+    }
 })
