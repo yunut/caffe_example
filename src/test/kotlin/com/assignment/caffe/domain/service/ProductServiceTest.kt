@@ -37,6 +37,7 @@ class ProductServiceTest : BehaviorSpec({
         val createProductQuery = kotlinFixture()
 
         every { productPort.insertProduct(any()) } just Runs
+        every { productPort.saveConsonant(any()) } just Runs
         every { productPort.existsProductByName(any()) } returns false
 
         When("정상적으로 처리되는 경우") {
@@ -76,6 +77,7 @@ class ProductServiceTest : BehaviorSpec({
         val updateProductQuery = kotlinFixture()
 
         every { productPort.updateProduct(any()) } just Runs
+        every { productPort.saveConsonant(any()) } just Runs
         every { productPort.existsProductById(any()) } returns true
         every { productPort.findProductById(any()) } returns baseProductBuild()
 
@@ -203,6 +205,30 @@ class ProductServiceTest : BehaviorSpec({
             Then("요청 어댑터에 예외가 전달된다.") {
                 shouldThrow<SQLException> {
                     productService.getProductsWithCursor(userId, size, sort, null)
+                }
+            }
+        }
+    }
+
+    Given("상품 검색 요청이 들어온 경우") {
+
+        val products = listOf(baseProductBuild())
+        When("정상적으로 처리되는 경우") {
+
+            every { productPort.searchProduct(any()) } returns products
+
+            Then("상품 목록 데이터가 반환된다.") {
+                withContext(Dispatchers.IO) {
+                    objectMapper.writeValueAsString(productService.searchProduct("테스트")) shouldBe objectMapper.writeValueAsString(products)
+                }
+            }
+        }
+        When("예외가 발생하는 경우") {
+
+            every { productPort.searchProduct(any()) } throws SQLException()
+            Then("요청 어댑터에 예외가 전달된다.") {
+                shouldThrow<SQLException> {
+                    productService.searchProduct("테스트")
                 }
             }
         }

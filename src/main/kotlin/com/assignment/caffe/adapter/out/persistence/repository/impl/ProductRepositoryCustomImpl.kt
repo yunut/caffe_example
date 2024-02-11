@@ -64,6 +64,7 @@ class ProductRepositoryCustomImpl(
             }
         }
 
-        return query.fetch()
+        return query.orderBy(product.createdAt.desc())
+            .fetch()
     }
 }

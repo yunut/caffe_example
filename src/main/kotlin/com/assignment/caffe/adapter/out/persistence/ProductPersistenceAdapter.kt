@@ -1,7 +1,10 @@
 package com.assignment.caffe.adapter.out.persistence
 
+import com.assignment.caffe.adapter.out.persistence.repository.ConsonantRepository
 import com.assignment.caffe.adapter.out.persistence.repository.ProductRepository
+import com.assignment.caffe.adapter.out.persistence.util.textFarsing
 import com.assignment.caffe.application.domain.enumeration.ProductSort
+import com.assignment.caffe.application.domain.model.Consonant
 import com.assignment.caffe.application.domain.model.Product
 import com.assignment.caffe.application.port.out.ProductPort
 import org.springframework.stereotype.Component
@@ -10,6 +13,7 @@ import java.util.*
 @Component
 class ProductPersistenceAdapter(
     private val productRepository: ProductRepository,
+    private val consonantRepository: ConsonantRepository,
 ) : ProductPort {
     override fun insertProduct(product: Product) {
         productRepository.save(product)
@@ -45,5 +49,11 @@ class ProductPersistenceAdapter(
 
     override fun searchProduct(keyword: String): List<Product> {
         return productRepository.searchProduct(keyword)
+    }
+
+    override fun saveConsonant(product: Product) {
+        val consonant = textFarsing(product.name)
+
+        consonantRepository.save(Consonant.of(product.name, consonant))
     }
 }

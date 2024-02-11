@@ -27,6 +27,7 @@ class ProductService(
         }
 
         productPort.insertProduct(product)
+        productPort.saveConsonant(product)
     }
 
     @Transactional
@@ -37,6 +38,7 @@ class ProductService(
 
         val product = productPort.findProductById(updateProductQuery.id)!!.update(updateProductQuery)
         productPort.updateProduct(product)
+        productPort.saveConsonant(product)
     }
 
     @Transactional
