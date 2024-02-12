@@ -6,6 +6,31 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class GetProductResponse(
+    val product: GetProductBody,
+) {
+    companion object {
+        fun toResponse(
+            product: Product,
+        ): GetProductResponse {
+            return GetProductResponse(
+                product = GetProductBody(
+                    id = product.barCode.toString(),
+                    category = product.category,
+                    salePrice = product.salePrice,
+                    originPrice = product.originPrice,
+                    name = product.name,
+                    description = product.description,
+                    expireDate = product.expireDate,
+                    size = product.size,
+                    createdAt = product.createdAt!!,
+                    updatedAt = product.updatedAt!!,
+                ),
+            )
+        }
+    }
+}
+
+data class GetProductBody(
     val id: String,
     val category: String,
     val salePrice: Int,
@@ -15,45 +40,34 @@ data class GetProductResponse(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val expireDate: LocalDate,
     val size: String,
-) {
-    companion object {
-        fun toResponse(
-            product: Product,
-        ): GetProductResponse {
-            return GetProductResponse(
-                id = product.barCode.toString(),
-                category = product.category,
-                salePrice = product.salePrice,
-                originPrice = product.originPrice,
-                name = product.name,
-                description = product.description,
-                expireDate = product.expireDate,
-                size = product.size,
-            )
-        }
-    }
-}
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    val createdAt: LocalDateTime,
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    val updatedAt: LocalDateTime,
+)
 
 data class GetProductListResponse(
-    val products: List<GetProductResponse>,
+    val products: List<GetProductListBody>,
 ) {
     companion object {
         fun toResponse(
             products: List<Product>,
-        ): List<GetProductListBody> {
-            return products.map {
-                GetProductListBody(
-                    id = it.barCode.toString(),
-                    category = it.category,
-                    salePrice = it.salePrice,
-                    originPrice = it.originPrice,
-                    name = it.name,
-                    expireDate = it.expireDate,
-                    size = it.size,
-                    createdAt = it.createdAt!!,
-                    updatedAt = it.updatedAt!!,
-                )
-            }
+        ): GetProductListResponse {
+            return GetProductListResponse(
+                products = products.map {
+                    GetProductListBody(
+                        id = it.barCode.toString(),
+                        category = it.category,
+                        salePrice = it.salePrice,
+                        originPrice = it.originPrice,
+                        name = it.name,
+                        expireDate = it.expireDate,
+                        size = it.size,
+                        createdAt = it.createdAt!!,
+                        updatedAt = it.updatedAt!!,
+                    )
+                },
+            )
         }
     }
 }
