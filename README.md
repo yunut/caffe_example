@@ -20,7 +20,7 @@
 - 메뉴 리스트 조회
 - 메뉴 상세 조회
 - 메뉴 검색
-
+---
 ### 2. 기술 스택
 2.1 사용 기술
 - kotlin & spring boot
@@ -31,7 +31,7 @@
 - redis
 - docker-compose
 - kotest
-
+---
 ### 3. 프로젝트 구조
 #### 3.1 프로젝트 구성도
 해당 프로젝트는 hexagonal architecture를 기반으로 구성되어 있습니다.
