@@ -33,7 +33,10 @@
 ### 3. 프로젝트 구조
 #### 3.1 프로젝트 구성도
 해당 프로젝트는 hexagonal architecture를 기반으로 구성되어 있습니다.
+
 참조: [hexagonal architecture](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software))
+<img width="775" alt="image" src="https://github.com/yunut/caffe_example/assets/47917032/d0e548ed-2cee-4988-a44f-4de116851924">
+
 
 
 
@@ -359,7 +362,8 @@ Response Body
 ```
 
 - 메뉴 리스트 조회
-  sequenceDiagram
+```mermaid
+sequenceDiagram
 
 client->>web: list of product request
 web->>server: send request data
@@ -367,6 +371,7 @@ server->>database: select product
 database-->>server: ack
 server-->>web: list of product data
 web-->>client: list of product response
+```
 
 GET /product/list
 
