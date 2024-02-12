@@ -77,6 +77,7 @@ caffe
 
 
 3.2 DB 스키마
+<img width="805" alt="image" src="https://github.com/yunut/caffe_example/assets/47917032/af13bddd-7b31-40d0-be08-d9106bfe330c">
 
 
 ### 4. API 명세
