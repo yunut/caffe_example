@@ -7,6 +7,7 @@
 5. [실행 방법](#실행-방법)
 6. [TODO](#TODO)
 
+---
 ### 1. 프로젝트 설명
 1.1 개요
 - 카페 메뉴를 관리할 수 있는 웹 서비스 API
@@ -77,10 +78,10 @@ caffe
 ```
 
 
-3.2 DB 스키마
+#### 3.3 DB 스키마
 <img width="805" alt="image" src="https://github.com/yunut/caffe_example/assets/47917032/af13bddd-7b31-40d0-be08-d9106bfe330c">
 
-
+---
 ### 4. API 명세
 스웨거 사용 시, 특정 환경에서는 동작하지 않는 버그가 있어 스웨거를 사용하지 않고 API 명세를 작성합니다.
 
@@ -535,7 +536,7 @@ Response Body
   }
 }
 ```
-
+---
 ### 5. 실행 방법
 - 프로젝트 root 디렉토리에서 수행합니다.
 - mysql container 로딩이 오래 걸려 예외가 발생할 수 있습니다.
@@ -548,6 +549,7 @@ Response Body
  - make up
 ```
 
+---
 ### 6. TODO
 - [x] 상품 리스트 조회, 상품 검색을 검색엔진 으로 변경
   - Elasticsearch 환경 구성
