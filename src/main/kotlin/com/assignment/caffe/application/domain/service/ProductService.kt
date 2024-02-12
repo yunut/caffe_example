@@ -19,7 +19,7 @@ class ProductService(
 ) : ProductUseCase {
 
     @Transactional
-    override fun createProduct(createProductQuery: CreateProductQuery) {
+    override fun createProduct(createProductQuery: CreateProductQuery): String {
         val product = createProductQuery.toEntity()
 
         if (productPort.existsProductByName(product.name)) {
@@ -28,6 +28,8 @@ class ProductService(
 
         productPort.insertProduct(product)
         productPort.saveConsonant(product)
+
+        return product.barCode.toString()
     }
 
     @Transactional

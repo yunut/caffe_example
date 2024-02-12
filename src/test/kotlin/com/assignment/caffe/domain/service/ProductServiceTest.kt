@@ -42,9 +42,9 @@ class ProductServiceTest : BehaviorSpec({
 
         When("정상적으로 처리되는 경우") {
 
-            Then("함수가 아무것도 반환하지 않고 종료된다.") {
+            Then("상품 id를 반환한다. (jpa에서 자동 생성되는 id를 반환)") {
                 withContext(Dispatchers.IO) {
-                    productService.createProduct(createProductQuery())
+                    productService.createProduct(createProductQuery()) shouldBe "null"
                 }
             }
         }

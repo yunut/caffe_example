@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import java.sql.SQLException
+import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureWebTestClient
@@ -51,7 +52,9 @@ class ProductControllerTest : BehaviorSpec({
         val principal = TestingAuthenticationToken("username", "password", "ROLE_USER")
         SecurityContextHolder.getContext().authentication = principal
 
-        every { productUseCase.createProduct(any()) } just Runs
+        val productId = UUID.randomUUID().toString()
+
+        every { productUseCase.createProduct(any()) } returns productId
 
         When("정상적인 parameter가 들어온 경우") {
 
@@ -63,6 +66,7 @@ class ProductControllerTest : BehaviorSpec({
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(MockMvcResultMatchers.status().isCreated)
+                    .andReturn().response.contentAsString shouldBe objectMapper.writeValueAsString(ResponseBody(MetaBody(HttpStatus.CREATED.value(), "Product create successfully"), productId))
             }
         }
 
@@ -360,8 +364,6 @@ class ProductControllerTest : BehaviorSpec({
     }
 
     Given("상품 검색 시 ") {
-
-        val searchName = "상품"
         When("검색된 상품이 있는 경우") {
             val products = listOf(baseProductBuild(), baseProductBuild())
             every { productUseCase.searchProduct(any()) } returns products

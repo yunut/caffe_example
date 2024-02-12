@@ -10,7 +10,7 @@ import com.assignment.caffe.application.port.`in`.query.UpdateProductQuery
 interface ProductUseCase {
 
     @Throws(ConflictException::class)
-    fun createProduct(createProductQuery: CreateProductQuery)
+    fun createProduct(createProductQuery: CreateProductQuery): String
 
     @Throws(NotFoundException::class)
     fun updateProduct(updateProductQuery: UpdateProductQuery)

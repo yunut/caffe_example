@@ -51,9 +51,7 @@ class ProductController(
             size = request.size,
             createdBy = authentication.name,
         )
-
-        productUseCase.createProduct(createProductQuery)
-        return ResponseBody(MetaBody(HttpStatus.CREATED.value(), "Product create successfully"))
+        return ResponseBody(MetaBody(HttpStatus.CREATED.value(), "Product create successfully"), productUseCase.createProduct(createProductQuery))
     }
 
     @ResponseStatus(HttpStatus.OK)
