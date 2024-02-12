@@ -540,6 +540,7 @@ Response Body
 ### 5. 실행 방법
 - 프로젝트 root 디렉토리에서 수행합니다.
 - mysql container 로딩이 오래 걸려 예외가 발생할 수 있습니다.
+- mysql container platform을 linux/amd64 로 지정해 해당 환경에서만 실행이 가능합니다.
 ```
 1. 프로젝트 빌드
  - ./gradlew clean build
