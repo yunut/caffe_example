@@ -2,7 +2,11 @@ package com.assignment.caffe.application.domain.model
 
 import com.assignment.caffe.application.domain.enumeration.ProductSize
 import com.assignment.caffe.application.port.`in`.query.UpdateProductQuery
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes

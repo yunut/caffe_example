@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class UserPersistenceAdapter(
-    private val userRepository: UserRepository
-): UserPort {
+    private val userRepository: UserRepository,
+) : UserPort {
     override fun insertUser(user: User) {
         userRepository.save(user)
     }
@@ -20,5 +20,4 @@ class UserPersistenceAdapter(
     override fun findUserByPhoneNumber(phoneNumber: String): User? {
         return userRepository.findByPhoneNumber(phoneNumber)
     }
-
 }

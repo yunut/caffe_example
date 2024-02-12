@@ -12,7 +12,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver
 @Component
 class CustomEntryPointHandler(
     @Qualifier("handlerExceptionResolver")
-    private val resolver: HandlerExceptionResolver
+    private val resolver: HandlerExceptionResolver,
 ) : AuthenticationEntryPoint {
     override fun commence(request: HttpServletRequest?, response: HttpServletResponse?, authException: AuthenticationException?) {
         val exception = AccessDeniedException("Access Denied")
